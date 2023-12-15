@@ -14,6 +14,6 @@ namespace BigBikeBlitz.Models
 		public double price { get; set; }
 		public string photo { get; set; }
 		public int date { get; set; }
-		public int UserId { get; set; }
+		public int? UserId { get; set; }
 	}
 }

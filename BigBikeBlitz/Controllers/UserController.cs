@@ -40,6 +40,18 @@ namespace BigBikeBlitz.Controllers
 			return new JsonResult(Ok(users));
 		}
 
+		[HttpGet("getById")]
+		public JsonResult getById(int userId)
+		{
+			var user = _userRepository.getById(userId);
+			if(user == null)
+			{
+				return new JsonResult(NotFound());
+			}
+
+			return new JsonResult(Ok(user));
+		}
+
 		[HttpDelete("delete")]
 		public JsonResult deleteUser(int userId)
 		{
@@ -56,7 +68,7 @@ namespace BigBikeBlitz.Controllers
 		}
 
 		[HttpPut("edit")]
-		public JsonResult updateUser(User user)
+		public JsonResult editUser(User user)
 		{
 			var userUpdate = _userRepository.editUser(user);
 
@@ -70,7 +82,7 @@ namespace BigBikeBlitz.Controllers
 			}
 			else
 			{
-				return new JsonResult(Ok("Edit user successfully!" + user));
+				return new JsonResult(Ok("Edit user successfully!"));
 			}
 		}
 	}
