@@ -37,7 +37,7 @@ namespace BigBikeBlitz.Repository
 
 		public User getById(int userId)
 		{
-			var user = _context.Users.Find(userId);
+			var user = _context.Users.Include(u => u.Bikes).FirstOrDefault(u => u.userId == userId);
 			return user;
 		}
 
@@ -76,9 +76,9 @@ namespace BigBikeBlitz.Repository
 				{
 					return 1;
 				}
-
 				userUpdate.userName = user.userName;
 				userUpdate.avatar = user.avatar;
+
 				_context.SaveChanges();
 				return 0;
 			}
