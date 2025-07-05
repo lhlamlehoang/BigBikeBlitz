@@ -22,6 +22,7 @@ import AboutPage from './pages/AboutPage';
 import MagazinePage from './pages/MagazinePage';
 import ContactPage from './pages/ContactPage';
 import HelpPage from './pages/HelpPage';
+import { notification } from 'antd';
 import FooterComponent from './components/Footer';
 
 const { Header, Sider, Content, Footer: LayoutFooter } = Layout;
@@ -171,9 +172,9 @@ const App: React.FC = () => {
     try {
       const res = await api.post('/api/cart/add', { bikeId: bike.id, quantity });
       setCart(res.data.bikes || []);
-      message.success(`${quantity} x ${bike.name} added to cart!`);
+      notification.success({ message: `${quantity} x ${bike.name} added to cart!` });
     } catch (err) {
-      message.error('Failed to add to cart. Please login.');
+      notification.error({ message: 'Failed to add to cart. Please login.' });
     }
   };
 

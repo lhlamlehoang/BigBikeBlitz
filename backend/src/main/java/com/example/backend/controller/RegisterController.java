@@ -24,7 +24,20 @@ public class RegisterController {
                 java.util.Collections.singletonMap("error", "Username already exists")
             );
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        String password = user.getPassword();
+        if (password == null ||
+            password.length() < 8 || password.length() > 12 ||
+            !password.matches(".*[a-z].*") ||
+            !password.matches(".*[A-Z].*") ||
+            !password.matches(".*[0-9].*")) {
+            return ResponseEntity.badRequest().body(
+                java.util.Collections.singletonMap(
+                    "error",
+                    "Password must be 8-12 characters and include lower, upper case, digit, and symbol."
+                )
+            );
+        }
+        user.setPassword(passwordEncoder.encode(password));
         user.setRole("USER");
         user.setEnabled(true);
         userRepository.save(user);

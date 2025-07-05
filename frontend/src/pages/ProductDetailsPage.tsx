@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Row, Col, Spin, message, Divider, Image, Carousel, InputNumber } from 'antd';
+import { Button, Row, Col, Spin, message, Divider, Image, Carousel, InputNumber, Card } from 'antd';
 import { ShoppingCartOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import api from '../auth/authFetch';
 
@@ -10,6 +10,7 @@ const ProductDetailsPage: React.FC<{ addToCart: (bike: any, quantity?: number) =
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState<number>(1);
   const navigate = useNavigate();
+  const [otherBikes, setOtherBikes] = useState<any[]>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -17,6 +18,13 @@ const ProductDetailsPage: React.FC<{ addToCart: (bike: any, quantity?: number) =
       .then(res => setBike(res.data))
       .catch(() => message.error('Failed to load bike'))
       .finally(() => setLoading(false));
+    // Fetch all bikes for recommendations
+    api.get('/api/bikes/all')
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) {
+          setOtherBikes(res.data.filter((b: any) => String(b.id) !== String(id)).slice(0, 4));
+        }
+      });
   }, [id]);
 
   if (loading) return <Spin style={{ display: 'block', margin: '64px auto' }} />;
@@ -27,7 +35,7 @@ const ProductDetailsPage: React.FC<{ addToCart: (bike: any, quantity?: number) =
 
   return (
     <div style={{ maxWidth: 1100, margin: '32px auto', background: '#fff', borderRadius: 16, boxShadow: '0 4px 24px #1677ff22', padding: 32 }}>
-      <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)} style={{ marginBottom: 24 }}>Back</Button>
+      <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/categories')} style={{ marginBottom: 24 }}>Back</Button>
       <Row gutter={32}>
         <Col xs={24} md={10}>
           <Carousel dots style={{ background: '#f7f9fb', borderRadius: 12, marginBottom: 16 }}>
@@ -57,30 +65,33 @@ const ProductDetailsPage: React.FC<{ addToCart: (bike: any, quantity?: number) =
             {bike.description || 'No description available.'}
           </div>
           <Button
-            type="primary"
-            icon={<ShoppingCartOutlined />}
+            className="hero-btn tricolor"
             size="large"
-            style={{
-              background: '#1677ff',
-              color: '#fff',
-              border: 'none',
-              boxShadow: '0 4px 16px rgba(22,119,255,0.12)',
-              fontWeight: 700,
-              borderRadius: 12,
-              padding: '10px 36px',
-              fontSize: 20,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              transition: 'background 0.2s, color 0.2s',
-            }}
-            className="product-btn-force-blue"
+            icon={<ShoppingCartOutlined />}
             onClick={() => isGuest ? requireLogin() : addToCart(bike, 1)}
           >
             Add to Cart
           </Button>
         </Col>
       </Row>
+      {/* Maybe you also like section */}
+      <div style={{ maxWidth: 1100, margin: '32px auto 0 auto', padding: '0 32px' }}>
+        <h2 style={{ fontSize: 26, fontWeight: 700, margin: '40px 0 24px 0', color: '#003580' }}>Maybe you also like...</h2>
+        <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+          {otherBikes.map(b => (
+            <Card
+              key={b.id}
+              hoverable
+              style={{ width: 240, borderRadius: 16, boxShadow: '0 2px 12px #1677ff11', cursor: 'pointer' }}
+              cover={<img alt={b.name} src={b.image} style={{ height: 160, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} />}
+              onClick={() => navigate(`/product/${b.id}`)}
+            >
+              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{b.name}</div>
+              <div style={{ color: '#1677ff', fontWeight: 600, fontSize: 16, marginBottom: 8 }}>${b.price?.toLocaleString()}</div>
+            </Card>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
