@@ -748,4 +748,33 @@ body {
 .dark-mode .category-product-card .ant-btn {
   background: #1677ff !important;
   color: #fff !important;
+}
+
+.fab-chat-btn {
+  background: linear-gradient(135deg, #1677ff 0%, #67e8f9 100%);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 2px 12px rgba(22,119,255,0.10);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+  border-radius: 50%;
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  min-height: 72px;
+  max-width: 72px;
+  max-height: 72px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  padding: 0;
+  line-height: 1;
+}
+.fab-chat-btn:hover, .fab-chat-btn:focus {
+  background: linear-gradient(135deg, #67e8f9 0%, #1677ff 100%);
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(22,119,255,0.18);
+  transform: scale(1.07);
 } 

@@ -39,3 +39,108 @@ frontend/coverage/
 
 # Ignore local Docker files
 *.local.yml
+
+# AI Agent specific ignores
+ai_agent/__pycache__/
+ai_agent/*.py[cod]
+ai_agent/*$py.class
+ai_agent/*.so
+ai_agent/build/
+ai_agent/dist/
+ai_agent/*.egg-info/
+ai_agent/*.egg
+
+# AI Agent virtual environments
+ai_agent/venv/
+ai_agent/env/
+ai_agent/.venv/
+
+# AI Agent database files
+ai_agent/*.db
+ai_agent/*.sqlite
+ai_agent/*.sqlite3
+ai_agent/ai_agent.db
+
+# AI Agent log files
+ai_agent/*.log
+ai_agent/ai_agent.log
+ai_agent/logs/
+
+# AI Agent knowledge base data
+ai_agent/knowledge_base/*.bin
+ai_agent/knowledge_base/*.sqlite3
+ai_agent/knowledge_base/chroma.sqlite3
+
+# AI Agent temporary files
+ai_agent/*.tmp
+ai_agent/*.temp
+ai_agent/temp/
+ai_agent/tmp/
+
+# Python cache files (general)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments (general)
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ConfigProvider, Layout, Menu, Card, Typography, Button, Row, Col, Spin, Dropdown, message, Tabs, MenuProps, Modal } from 'antd';
-import { ShoppingCartOutlined, HomeOutlined, AppstoreOutlined, UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined, LeftOutlined, RightOutlined, FacebookFilled, InstagramOutlined, YoutubeFilled } from '@ant-design/icons';
+import { ConfigProvider, Layout, Menu, Card, Typography, Button, Row, Col, Spin, Dropdown, message, Tabs, MenuProps, Modal, Badge } from 'antd';
+import { ShoppingCartOutlined, HomeOutlined, AppstoreOutlined, UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined, LeftOutlined, RightOutlined, FacebookFilled, InstagramOutlined, YoutubeFilled, HeartOutlined, BellOutlined, MessageOutlined } from '@ant-design/icons';
 import './App.css';
 import api from './auth/authFetch';
 import { Routes, Route, Link, useNavigate, Navigate, useLocation } from 'react-router-dom';
@@ -22,10 +22,25 @@ import AboutPage from './pages/AboutPage';
 import MagazinePage from './pages/MagazinePage';
 import ContactPage from './pages/ContactPage';
 import HelpPage from './pages/HelpPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import CookiePolicyPage from './pages/CookiePolicyPage';
 import { notification } from 'antd';
 import FooterComponent from './components/Footer';
 
-const { Header, Sider, Content, Footer: LayoutFooter } = Layout;
+// Import new professional components
+import ErrorBoundary from './components/ErrorBoundary';
+import Header from './components/Header';
+import CookieConsent from './components/CookieConsent';
+import NewsletterSignup from './components/NewsletterSignup';
+import LoadingSpinner from './components/LoadingSpinner';
+import ReviewsSection from './components/ReviewsSection';
+import LiveChat from './components/LiveChat';
+import SearchSuggestions from './components/SearchSuggestions';
+import analytics from './utils/analytics';
+import { ThemeProvider } from './contexts/ThemeContext';
+
+const { Header: AntHeader, Sider, Content, Footer: LayoutFooter } = Layout;
 const { Title } = Typography;
 
 interface Bike {
@@ -35,6 +50,23 @@ interface Bike {
   image: string;
   brand: string;
   type: string;
+}
+
+interface WishlistItem {
+  id: number;
+  bikeId: number;
+  userId: number;
+  addedAt: string;
+  bike: Bike;
+}
+
+interface NotificationItem {
+  id: number;
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  read: boolean;
+  createdAt: string;
 }
 
 const bmwBikes: Bike[] = [
@@ -113,6 +145,25 @@ const App: React.FC = () => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const location = useLocation();
 
+  // New state for additional features
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [showCookieConsent, setShowCookieConsent] = useState(true);
+  const [cookiePreferences, setCookiePreferences] = useState({
+    necessary: true,
+    analytics: false,
+    marketing: false,
+    functional: false
+  });
+  const [showNewsletter, setShowNewsletter] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const [showLiveChat, setShowLiveChat] = useState(false);
+
+  // Initialize analytics
+  useEffect(() => {
+    analytics.trackPageView();
+  }, [location.pathname]);
+
   useEffect(() => {
     api.get('/api/bikes/all')
       .then(res => {
@@ -122,16 +173,44 @@ const App: React.FC = () => {
       .then(data => {
         setBikes(data);
         setLoading(false);
+        analytics.trackEvent('data', 'load', 'bikes', data.length);
       })
       .catch(err => {
         console.log(err)
         setBikes([]);
         setLoading(false);
+        analytics.trackError('Failed to load bikes', 'API');
       });
   }, []);
 
+  // Load user data when authenticated
   useEffect(() => {
-    document.title = 'Big Bike Blitz';
+    if (token && user) {
+      loadUserData();
+    }
+  }, [token, user]);
+
+  const loadUserData = async () => {
+    try {
+      // Load cart
+      const cartRes = await api.get('/api/cart');
+      setCart(cartRes.data.bikes || []);
+      setCartItemCount(cartRes.data.bikes?.length || 0);
+
+      // Load wishlist
+      const wishlistRes = await api.get('/api/wishlist');
+      setWishlist(wishlistRes.data || []);
+
+      // Load notifications
+      const notificationsRes = await api.get('/api/notifications');
+      setNotifications(notificationsRes.data || []);
+    } catch (error) {
+      console.error('Failed to load user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    document.title = 'Big Bike Blitz - Premium Motorcycles';
   }, []);
 
   const getInitials = (username?: string) => {
@@ -144,15 +223,20 @@ const App: React.FC = () => {
     const res = await api.post('/api/bikes', bike);
     setBikes(prev => [...prev, res.data]);
     setShowAddModal(false);
+    analytics.trackEvent('admin', 'add', 'bike', bike.price);
   };
+  
   const handleEditBike = async (bike: Bike) => {
     const res = await api.put(`/api/bikes/${bike.id}`, bike);
     setBikes(prev => prev.map(b => b.id === bike.id ? res.data : b));
     setEditBike(null);
+    analytics.trackEvent('admin', 'edit', 'bike');
   };
+  
   const handleDeleteBike = async (id: number) => {
     await api.delete(`/api/bikes/${id}`);
     setBikes(prev => prev.filter(b => b.id !== id));
+    analytics.trackEvent('admin', 'delete', 'bike');
   };
 
   // Handler to show login modal
@@ -172,16 +256,66 @@ const App: React.FC = () => {
     try {
       const res = await api.post('/api/cart/add', { bikeId: bike.id, quantity });
       setCart(res.data.bikes || []);
+      setCartItemCount(res.data.bikes?.length || 0);
       notification.success({ message: `${quantity} x ${bike.name} added to cart!` });
+      analytics.trackAddToCart(bike.id.toString(), bike.name, bike.price, quantity);
     } catch (err) {
       notification.error({ message: 'Failed to add to cart. Please login.' });
+      analytics.trackError('Failed to add to cart', 'Cart');
     }
+  };
+
+  // Wishlist handlers
+  const addToWishlist = async (bike: Bike) => {
+    if (!token) {
+      requireLogin();
+      return;
+    }
+    try {
+      const res = await api.post('/api/wishlist/add', { bikeId: bike.id });
+      setWishlist(prev => [...prev, res.data]);
+      notification.success({ message: `${bike.name} added to wishlist!` });
+      analytics.trackEvent('wishlist', 'add', bike.name);
+    } catch (err) {
+      notification.error({ message: 'Failed to add to wishlist.' });
+    }
+  };
+
+  const removeFromWishlist = async (bikeId: number) => {
+    try {
+      await api.delete(`/api/wishlist/${bikeId}`);
+      setWishlist(prev => prev.filter(item => item.bikeId !== bikeId));
+      notification.success({ message: 'Removed from wishlist!' });
+      analytics.trackEvent('wishlist', 'remove', 'bike');
+    } catch (err) {
+      notification.error({ message: 'Failed to remove from wishlist.' });
+    }
+  };
+
+  // Cookie consent handlers
+  const handleCookieAccept = (preferences: any) => {
+    setCookiePreferences(preferences);
+    setShowCookieConsent(false);
+    localStorage.setItem('cookiePreferences', JSON.stringify(preferences));
+    analytics.trackEvent('privacy', 'cookie_accept', JSON.stringify(preferences));
+  };
+
+  const handleCookieDecline = () => {
+    setShowCookieConsent(false);
+    localStorage.setItem('cookiePreferences', JSON.stringify({ necessary: true, analytics: false, marketing: false, functional: false }));
+    analytics.trackEvent('privacy', 'cookie_decline');
+  };
+
+  // Newsletter handlers
+  const handleNewsletterSubscribe = (email: string) => {
+    analytics.trackEvent('marketing', 'newsletter_subscribe', email);
+    setShowNewsletter(false);
   };
 
   // Tab navigation handler
   const handleTabChange = (key: string) => {
     // If guest tries to access cart or orders, show login modal
-    if (!token && (key === '/cart' || key === '/orders')) {
+    if (!token && (key === '/cart' || key === '/orders' || key === '/wishlist')) {
       requireLogin();
       return;
     }
@@ -205,142 +339,251 @@ const App: React.FC = () => {
     };
   }, [heroIndex]);
 
-  // Avatar dropdown items
-  const userMenuItems: MenuProps['items'] = user ? [
-    { key: 'profile', label: 'Profile', onClick: () => navigate('/profile') },
-    { type: 'divider' },
-    { key: 'logout', label: 'Logout', onClick: () => { logout(); localStorage.removeItem('token'); } },
-  ] : [
-    { key: 'login', label: 'Login', onClick: () => navigate('/login', { state: { from: location.pathname } }) },
-  ];
+  // Check for saved cookie preferences
+  useEffect(() => {
+    const saved = localStorage.getItem('cookiePreferences');
+    if (saved) {
+      setCookiePreferences(JSON.parse(saved));
+      setShowCookieConsent(false);
+    }
+  }, []);
+
+  // Show newsletter signup after 30 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!localStorage.getItem('newsletterShown')) {
+        setShowNewsletter(true);
+        localStorage.setItem('newsletterShown', 'true');
+      }
+    }, 30000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner fullScreen text="Loading Big Bike Blitz..." />;
+  }
 
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/forgot" element={<ForgotPasswordPage />} />
-      <Route path="/reset" element={<ResetPasswordPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/magazine" element={<MagazinePage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/help" element={<HelpPage />} />
-      <Route path="/product/:id" element={<ProductDetailsPage addToCart={addToCart} requireLogin={requireLogin} isGuest={!token} />} />
-      <Route path="/*" element={
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#1677ff',
-              colorBgBase: '#ffffff',
-              colorTextBase: '#1a1a1a',
-              colorBgContainer: '#ffffff',
-              colorBorder: '#e0e0e0',
-            },
-            components: {
-              Layout: {
-                headerBg: '#ffffff',
-                colorBgBase: '#ffffff',
-                colorText: '#1a1a1a',
-              },
-              Tabs: {
-                inkBarColor: '#1677ff',
-                itemColor: '#1a1a1a',
-                itemSelectedColor: '#1677ff',
-                itemHoverColor: '#4096ff',
-                cardBg: '#f7f9fb',
-              },
-              Card: {
-                colorBgContainer: '#ffffff',
-                colorText: '#1a1a1a',
-              },
-              Button: {
-                colorPrimary: '#1677ff',
-                colorPrimaryHover: '#4096ff',
-                colorPrimaryActive: '#0958d9',
-                colorTextLightSolid: '#ffffff',
-              },
-            },
-          }}
-        >
-          <Layout style={{ minHeight: '100vh', background: '#f7f9fb' }}>
-            <Header className="header-animate" style={{ background: '#fff', padding: 0, boxShadow: '0 2px 8px #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, height: 96 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
-                <img src="../public/assets/logo.jpg" alt="Store Logo" style={{ height: 56, width: 56, marginLeft: 32, cursor: 'pointer' }} onClick={() => navigate('/')} />
-                <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 38, letterSpacing: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>Big Bike Blitz</Title>
-                <Tabs
-                  className="tabs-animate"
-                  defaultActiveKey={window.location.pathname === '/categories' ? '/categories' : window.location.pathname === '/cart' ? '/cart' : '/'}
-                  activeKey={window.location.pathname}
-                  onChange={handleTabChange}
-                  style={{ marginLeft: 48 }}
-                  items={[
-                    { key: '/', label: <span style={{ fontSize: 24, padding: '0 32px' }}>Home</span> },
-                    { key: '/categories', label: <span style={{ fontSize: 24, padding: '0 32px' }}>Categories</span> },
-                    { key: '/cart', label: <span style={{ fontSize: 24, padding: '0 32px' }}>Cart</span> },
-                    { key: '/orders', label: <span style={{ fontSize: 24, padding: '0 32px' }}>Orders</span> },
-                    ...(user?.role === 'ADMIN' ? [{ key: '/admin', label: <span style={{ fontSize: 24, padding: '0 32px' }}>Admin</span> }] : []),
-                  ]}
-                  tabBarStyle={{ fontWeight: 600, fontSize: 24, minHeight: 64 }}
+    <ErrorBoundary>
+      <ThemeProvider>
+        <Layout style={{ minHeight: '100vh', background: '#f7f9fb' }}>
+          <Header 
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+            cartItemCount={cartItemCount}
+          />
+          
+          <Content style={{ margin: '24px 16px 0', overflow: 'initial', background: '#f7f9fb' }}>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot" element={<ForgotPasswordPage />} />
+              <Route path="/reset" element={<ResetPasswordPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/magazine" element={<MagazinePage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/help" element={<HelpPage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms" element={<TermsOfServicePage />} />
+              <Route path="/cookies" element={<CookiePolicyPage />} />
+              <Route path="/product/:id" element={
+                <ProductDetailsPage 
+                  addToCart={addToCart} 
+                  requireLogin={requireLogin} 
+                  isGuest={!token}
+                  addToWishlist={addToWishlist}
+                  removeFromWishlist={removeFromWishlist}
+                  wishlist={wishlist}
                 />
-              </div>
-              <div style={{ marginRight: 32, display: 'flex', alignItems: 'center', gap: 24 }}>
-                <Dropdown
-                  menu={{ items: userMenuItems }}
-                  placement="bottomRight"
-                  trigger={["click"]}
-                >
-                  <Button
-                    shape="circle"
-                    icon={<UserOutlined style={{ fontSize: 28 }} />}
-                    style={{ background: '#f3f4f6', color: '#1677ff', border: 'none', boxShadow: '0 2px 8px #e0e6ed' }}
-                    aria-label="User menu"
-                  />
-                </Dropdown>
-              </div>
-            </Header>
-            <Content style={{ margin: '24px 16px 0', overflow: 'initial', background: '#f7f9fb' }}>
-              <Routes>
-                <Route path="/" element={
-                  <HomePage
-                    bikes={bikes}
-                    user={user}
-                    loading={loading}
+              } />
+              <Route path="/" element={
+                <HomePage
+                  bikes={bikes}
+                  user={user}
+                  loading={loading}
+                  addToCart={addToCart}
+                  setEditBike={setEditBike}
+                  handleDeleteBike={handleDeleteBike}
+                  setShowAddModal={setShowAddModal}
+                  heroIndex={heroIndex}
+                  heroBikes={heroBikes}
+                  nextHero={nextHero}
+                  prevHero={prevHero}
+                  navigate={navigate}
+                  addToWishlist={addToWishlist}
+                  removeFromWishlist={removeFromWishlist}
+                  wishlist={wishlist}
+                />
+              } />
+              <Route path="/categories" element={
+                <CategoriesPage 
+                  addToCart={addToCart} 
+                  requireLogin={requireLogin} 
+                  isGuest={!token}
+                  addToWishlist={addToWishlist}
+                  removeFromWishlist={removeFromWishlist}
+                  wishlist={wishlist}
+                />
+              } />
+              <Route path="/cart" element={<CartPage requireLogin={requireLogin} />} />
+              <Route path="/wishlist" element={
+                <RequireAuth>
+                  <WishlistPage 
+                    wishlist={wishlist}
+                    removeFromWishlist={removeFromWishlist}
                     addToCart={addToCart}
-                    setEditBike={setEditBike}
-                    handleDeleteBike={handleDeleteBike}
-                    setShowAddModal={setShowAddModal}
-                    heroIndex={heroIndex}
-                    heroBikes={heroBikes}
-                    nextHero={nextHero}
-                    prevHero={prevHero}
-                    navigate={navigate}
                   />
-                } />
-                <Route path="/categories" element={<CategoriesPage addToCart={addToCart} requireLogin={requireLogin} isGuest={!token} />} />
-                <Route path="/cart" element={<CartPage requireLogin={requireLogin} />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/orders" element={<OrdersPage requireLogin={requireLogin} />} />
-                <Route path="/payment" element={<PaymentPage />} />
-                <Route path="/admin" element={<AdminPanel />} />
-              </Routes>
-              <Modal
-                open={loginModalVisible}
-                onOk={handleLoginModalOk}
-                onCancel={handleLoginModalCancel}
-                title="Login Required"
-                okText="Go to Login"
-                cancelText="Cancel"
-                centered
+                </RequireAuth>
+              } />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/orders" element={<OrdersPage requireLogin={requireLogin} />} />
+              <Route path="/payment" element={<PaymentPage />} />
+              <Route path="/admin" element={<AdminPanel />} />
+            </Routes>
+
+            {/* Newsletter Signup Modal */}
+            <Modal
+              open={showNewsletter}
+              onCancel={() => setShowNewsletter(false)}
+              footer={null}
+              centered
+              width={600}
+            >
+              <NewsletterSignup 
+                title="Stay Updated with Big Bike Blitz"
+                description="Get exclusive access to new motorcycle releases, special offers, and riding tips delivered to your inbox."
+                onSubscribe={handleNewsletterSubscribe}
+              />
+            </Modal>
+
+            {/* Login Required Modal */}
+            <Modal
+              open={loginModalVisible}
+              onOk={handleLoginModalOk}
+              onCancel={handleLoginModalCancel}
+              title="Login Required"
+              okText="Go to Login"
+              cancelText="Cancel"
+              centered
+            >
+              <div style={{ fontSize: 18, marginBottom: 12 }}>
+                You need to be logged in to perform this action.
+              </div>
+            </Modal>
+          </Content>
+          
+          <FooterComponent />
+        </Layout>
+
+        {/* Cookie Consent */}
+        {showCookieConsent && (
+          <CookieConsent
+            onAccept={handleCookieAccept}
+            onDecline={handleCookieDecline}
+          />
+        )}
+
+        {/* Live Chat */}
+        <LiveChat 
+          isOpen={showLiveChat}
+          onClose={() => setShowLiveChat(false)}
+        />
+
+        {/* Floating Action Buttons */}
+        <div style={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12
+        }}>
+          <Button
+            className="fab-chat-btn"
+            icon={<MessageOutlined />}
+            onClick={() => setShowLiveChat(true)}
+            title="Live Chat Support"
+          />
+        </div>
+
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+};
+
+// Wishlist Page Component
+const WishlistPage: React.FC<{
+  wishlist: WishlistItem[];
+  removeFromWishlist: (bikeId: number) => void;
+  addToCart: (bike: Bike, quantity?: number) => void;
+}> = ({ wishlist, removeFromWishlist, addToCart }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
+      <Title level={2} style={{ marginBottom: 32, textAlign: 'center' }}>
+        My Wishlist
+      </Title>
+      
+      {wishlist.length === 0 ? (
+        <Card style={{ textAlign: 'center', padding: '48px' }}>
+          <HeartOutlined style={{ fontSize: 64, color: '#ccc', marginBottom: 16 }} />
+          <Title level={4} style={{ color: '#666' }}>Your wishlist is empty</Title>
+          <p style={{ color: '#999', marginBottom: 24 }}>
+            Start adding motorcycles to your wishlist to save them for later.
+          </p>
+          <Button type="primary" size="large" onClick={() => navigate('/categories')}>
+            Browse Motorcycles
+          </Button>
+        </Card>
+      ) : (
+        <Row gutter={[24, 24]}>
+          {wishlist.map((item) => (
+            <Col xs={24} sm={12} md={8} lg={6} key={item.id}>
+              <Card
+                hoverable
+                cover={
+                  <img 
+                    alt={item.bike.name} 
+                    src={item.bike.image} 
+                    style={{ height: 200, objectFit: 'cover' }}
+                  />
+                }
+                actions={[
+                  <Button 
+                    type="primary" 
+                    onClick={() => addToCart(item.bike)}
+                    icon={<ShoppingCartOutlined />}
+                  >
+                    Add to Cart
+                  </Button>,
+                  <Button 
+                    danger 
+                    onClick={() => removeFromWishlist(item.bike.id)}
+                    icon={<DeleteOutlined />}
+                  >
+                    Remove
+                  </Button>
+                ]}
               >
-                <div style={{ fontSize: 18, marginBottom: 12 }}>
-                  You need to be logged in to perform this action.
-                </div>
-              </Modal>
-            </Content>
-            <FooterComponent />
-          </Layout>
-        </ConfigProvider>
-      } />
-    </Routes>
+                <Card.Meta
+                  title={item.bike.name}
+                  description={
+                    <div>
+                      <p style={{ color: '#1677ff', fontSize: 18, fontWeight: 'bold' }}>
+                        ${item.bike.price?.toLocaleString()}
+                      </p>
+                      <p>{item.bike.brand} • {item.bike.type}</p>
+                    </div>
+                  }
+                />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
+    </div>
   );
 };
 

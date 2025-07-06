@@ -17,6 +17,14 @@ interface Bike {
   year?: string;
 }
 
+interface WishlistItem {
+  id: number;
+  bikeId: number;
+  userId: number;
+  addedAt: string;
+  bike: Bike;
+}
+
 interface HomePageProps {
   bikes: Bike[];
   user: any;
@@ -30,6 +38,9 @@ interface HomePageProps {
   nextHero: () => void;
   prevHero: () => void;
   navigate: (path: string) => void;
+  addToWishlist?: (bike: Bike) => void;
+  removeFromWishlist?: (bikeId: number) => void;
+  wishlist?: WishlistItem[];
 }
 
 const HomePage: React.FC<HomePageProps> = ({
@@ -45,6 +56,9 @@ const HomePage: React.FC<HomePageProps> = ({
   nextHero,
   prevHero,
   navigate,
+  addToWishlist,
+  removeFromWishlist,
+  wishlist = [],
 }) => {
   const [viewBike, setViewBike] = useState<Bike | null>(null);
 

@@ -121,13 +121,13 @@ const Footer: React.FC = () => {
           <Col xs={24} md={8}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <MailOutlined style={{ color: '#1677ff', fontSize: 16 }} />
-              <Text style={{ color: '#666' }}>info@bigbikeblitz.com</Text>
+              <Text style={{ color: '#666' }}>bigbikeblitz@gmail.com</Text>
             </div>
           </Col>
           <Col xs={24} md={8}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <EnvironmentOutlined style={{ color: '#1677ff', fontSize: 16 }} />
-              <Text style={{ color: '#666' }}>123 Motorcycle Ave, Bike City, BC 12345</Text>
+              <Text style={{ color: '#666' }}>Dai Nam racecourse</Text>
             </div>
           </Col>
         </Row>

@@ -4,7 +4,38 @@ import { Button, Row, Col, Spin, message, Divider, Image, Carousel, InputNumber,
 import { ShoppingCartOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import api from '../auth/authFetch';
 
-const ProductDetailsPage: React.FC<{ addToCart: (bike: any, quantity?: number) => void, requireLogin: () => void, isGuest: boolean }> = ({ addToCart, requireLogin, isGuest }) => {
+interface Bike {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  brand: string;
+  type: string;
+}
+
+interface WishlistItem {
+  id: number;
+  bikeId: number;
+  userId: number;
+  addedAt: string;
+  bike: Bike;
+}
+
+const ProductDetailsPage: React.FC<{ 
+  addToCart: (bike: any, quantity?: number) => void, 
+  requireLogin: () => void, 
+  isGuest: boolean,
+  addToWishlist?: (bike: Bike) => void,
+  removeFromWishlist?: (bikeId: number) => void,
+  wishlist?: WishlistItem[]
+}> = ({ 
+  addToCart, 
+  requireLogin, 
+  isGuest,
+  addToWishlist,
+  removeFromWishlist,
+  wishlist = []
+}) => {
   const { id } = useParams();
   const [bike, setBike] = useState<any>(null);
   const [loading, setLoading] = useState(true);

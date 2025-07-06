@@ -3,7 +3,7 @@ import { Card, Button, Tabs, Slider, Select, Input, Row, Col, Spin, Empty, messa
 import { ShoppingCartOutlined, AppstoreOutlined, SearchOutlined } from '@ant-design/icons';
 import api from '../auth/authFetch';
 import './CategoriesPage.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const { TabPane } = Tabs;
 
@@ -18,13 +18,40 @@ const categories = [
   { key: 'scrambler', label: 'Scrambler Bikes' },
 ];
 
+interface Bike {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  brand: string;
+  type: string;
+}
+
+interface WishlistItem {
+  id: number;
+  bikeId: number;
+  userId: number;
+  addedAt: string;
+  bike: Bike;
+}
+
 interface CategoriesPageProps {
   addToCart: (bike: any, quantity: number) => void;
   requireLogin: () => void;
   isGuest: boolean;
+  addToWishlist?: (bike: Bike) => void;
+  removeFromWishlist?: (bikeId: number) => void;
+  wishlist?: WishlistItem[];
 }
 
-const CategoriesPage: React.FC<CategoriesPageProps> = ({ addToCart, requireLogin, isGuest }) => {
+const CategoriesPage: React.FC<CategoriesPageProps> = ({ 
+  addToCart, 
+  requireLogin, 
+  isGuest,
+  addToWishlist,
+  removeFromWishlist,
+  wishlist = []
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [price, setPrice] = useState<[number, number]>([1000, 200000]);
   const [brand, setBrand] = useState<string | undefined>(undefined);
@@ -38,6 +65,16 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ addToCart, requireLogin
   const [selectedBike, setSelectedBike] = useState<any | null>(null);
   const [quantityMap, setQuantityMap] = useState<{ [bikeId: number]: number }>({});
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Read search parameter from URL
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchQuery = searchParams.get('search');
+    if (searchQuery) {
+      setSearch(searchQuery);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     setLoading(true);

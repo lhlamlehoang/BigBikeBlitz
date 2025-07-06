@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+"""
+BigBikeBlitz AI Agent Startup Script
+Initializes and runs the AI agent with proper error handling and logging.
+"""
+
+import asyncio
+import logging
+import sys
+import os
+from pathlib import Path
+
+# Add the current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from main import app
+from ollama_client import OllamaClient
+from knowledge_base import KnowledgeBase
+from website_scraper import WebsiteScraper
+from database import DatabaseManager
+import uvicorn
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('ai_agent.log')
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+async def check_ollama():
+    """Check if Ollama is running and Mistral 7B is available"""
+    try:
+        client = OllamaClient()
+        is_healthy = await client.check_health()
+        
+        if not is_healthy:
+            logger.error("❌ Ollama is not running or Llama 3.2 1B model is not available")
+            logger.info("Please ensure:")
+            logger.info("1. Ollama is installed and running: ollama serve")
+            logger.info("2. Llama 3.2 1B model is downloaded: ollama pull llama3.2:1b")
+            return False
+        
+        model_info = await client.get_model_info()
+        logger.info(f"✅ Ollama is running with model: {model_info.get('name', 'Unknown')}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Failed to connect to Ollama: {e}")
+        return False
+
+async def initialize_database():
+    """Initialize the database"""
+    try:
+        db_manager = DatabaseManager()
+        await db_manager.initialize()
+        logger.info("✅ Database initialized successfully")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize database: {e}")
+        return False
+
+async def check_knowledge_base():
+    """Check if knowledge base has data"""
+    try:
+        kb = KnowledgeBase()
+        has_data = await kb.has_data()
+        
+        if not has_data:
+            logger.warning("⚠️  Knowledge base is empty. Will scrape website on startup.")
+            return False
+        
+        stats = await kb.get_stats()
+        logger.info(f"✅ Knowledge base has {stats.get('total_documents', 0)} documents")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Failed to check knowledge base: {e}")
+        return False
+
+async def scrape_website_if_needed():
+    """Scrape website if knowledge base is empty"""
+    try:
+        kb = KnowledgeBase()
+        has_data = await kb.has_data()
+        
+        if not has_data:
+            logger.info("🌐 Starting website scraping...")
+            scraper = WebsiteScraper()
+            
+            # Scrape main pages
+            pages = [
+                "http://localhost:5173",
+                "http://localhost:5173/categories",
+                "http://localhost:5173/about",
+                "http://localhost:5173/contact",
+                "http://localhost:5173/help"
+            ]
+            
+            for page in pages:
+                try:
+                    data = await scraper.scrape_page(page)
+                    if data:
+                        await kb.add_document(data)
+                        logger.info(f"✅ Scraped: {page}")
+                except Exception as e:
+                    logger.warning(f"⚠️  Failed to scrape {page}: {e}")
+            
+            logger.info("✅ Website scraping completed")
+        else:
+            logger.info("✅ Knowledge base already has data")
+            
+    except Exception as e:
+        logger.error(f"❌ Failed to scrape website: {e}")
+
+def print_banner():
+    """Print startup banner"""
+    banner = """
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                    BigBikeBlitz AI Agent                     ║
+    ║                                                              ║
+    ║  🚀 Powered by Llama 3.2 1B via Ollama                        ║
+    ║  🤖 Real-time AI chat for motorcycle e-commerce             ║
+    ║  📚 Intelligent knowledge base with website scraping        ║
+    ║  🔗 WebSocket and REST API support                          ║
+    ╚══════════════════════════════════════════════════════════════╝
+    """
+    print(banner)
+
+async def main():
+    """Main startup function"""
+    print_banner()
+    
+    logger.info("🚀 Starting BigBikeBlitz AI Agent...")
+    
+    # Check prerequisites
+    logger.info("🔍 Checking prerequisites...")
+    
+    # Check Ollama
+    if not await check_ollama():
+        logger.error("❌ Cannot start without Ollama. Please fix the issues above.")
+        sys.exit(1)
+    
+    # Initialize database
+    if not await initialize_database():
+        logger.error("❌ Cannot start without database. Please fix the issues above.")
+        sys.exit(1)
+    
+    # Check knowledge base
+    await check_knowledge_base()
+    
+    # Scrape website if needed
+    await scrape_website_if_needed()
+    
+    logger.info("✅ All systems ready!")
+    logger.info("🌐 AI Agent will be available at: http://localhost:8000")
+    logger.info("📖 API Documentation: http://localhost:8000/docs")
+    logger.info("🔌 WebSocket endpoint: ws://localhost:8000/ws/chat/{session_id}")
+    logger.info("")
+    logger.info("Press Ctrl+C to stop the server")
+    logger.info("=" * 60)
+
+if __name__ == "__main__":
+    try:
+        # Run startup checks
+        asyncio.run(main())
+        
+        # Start the FastAPI server
+        uvicorn.run(
+            "main:app",
+            host="0.0.0.0",
+            port=8000,
+            reload=False,
+            log_level="info"
+        )
+        
+    except KeyboardInterrupt:
+        logger.info("🛑 AI Agent stopped by user")
+    except Exception as e:
+        logger.error(f"❌ Failed to start AI Agent: {e}")
+        sys.exit(1) 

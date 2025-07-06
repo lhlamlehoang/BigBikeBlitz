@@ -50,6 +50,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://192.168.137.1:5173");
         configuration.addAllowedOrigin("http://127.0.0.1:5173");
         configuration.addAllowedOrigin("http://172.28.192.1:5173");
+        configuration.addAllowedOrigin("http://0.0.0.0:8000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
