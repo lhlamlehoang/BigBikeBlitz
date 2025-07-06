@@ -203,8 +203,8 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
       }}
     >
       {/* Logo and Mobile Menu */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+      <div style={{ display: 'flex', alignItems: 'center', height: 80 }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', height: '100%' }}>
           <img 
             src="/assets/logo.jpg" 
             alt="Big Bike Blitz" 
@@ -212,22 +212,23 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
               height: 50, 
               width: 50, 
               borderRadius: 10,
-              marginRight: 16
+              marginRight: 16,
+              alignSelf: 'center'
             }} 
           />
-          <div>
-            <Text strong style={{ fontSize: 22, color: '#1677ff', marginBottom: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', alignSelf: 'center' }}>
+            <Text strong style={{ fontSize: 30, color: '#1677ff', marginBottom: 0, lineHeight: 1 }}>
               Big Bike Blitz
             </Text>
-            <div style={{ fontSize: 14, color: '#666', lineHeight: 1, marginTop: -2 }}>
+            <div style={{ fontSize: 14, color: '#666', lineHeight: 1, marginTop: 2 }}>
               Premium Motorcycles
             </div>
           </div>
         </Link>
       </div>
 
-      {/* Search Bar */}
-      <div ref={searchRef} style={{ flex: 1, maxWidth: 500, margin: '0 24px', position: 'relative' }}>
+      {/* Search Bar (centered vertically) */}
+      <div ref={searchRef} style={{ flex: 1, maxWidth: 500, margin: '0 24px', position: 'relative', display: 'flex', alignItems: 'center', height: 80 }}>
         <Search
           placeholder="Search motorcycles, brands, or models..."
           value={searchValue}
@@ -235,9 +236,8 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
           onSearch={handleSearch}
           enterButton={<SearchOutlined />}
           size="large"
-          style={{ borderRadius: 8 }}
+          style={{ borderRadius: 8, width: '100%' }}
         />
-        
         {/* Search Dropdown */}
         {showSearchDropdown && searchSuggestions.length > 0 && (
           <div style={{
@@ -282,7 +282,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
         )}
       </div>
 
-      {/* Navigation Menu */}
+      {/* Navigation Menu and User Actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
         <Menu
           mode="horizontal"
@@ -295,7 +295,6 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
           }}
           onClick={({ key }) => navigate(key)}
         />
-
         {/* User Actions */}
         <Space size="middle">
           {/* Cart */}
@@ -307,7 +306,6 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
               style={{ fontSize: 22 }}
             />
           </Badge>
-
           {/* User Menu */}
           {user ? (
             <Dropdown

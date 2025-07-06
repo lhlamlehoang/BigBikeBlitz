@@ -176,7 +176,13 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                   className="category-product-card fade-in"
                   style={{ borderRadius: 18, minHeight: 340, boxShadow: '0 4px 24px rgba(22,119,255,0.08)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
                   styles={{ body: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 260, padding: 16 } }}
-                  cover={<img src={bike.image} alt={bike.name} style={{ width: '100%', height: 140, objectFit: 'cover', borderRadius: 12, marginBottom: 12, boxShadow: '0 2px 8px #1677ff22' }} />}
+                  cover={
+                    <img
+                      src={bike.image}
+                      alt={bike.name}
+                      style={{ display: 'block', margin: '0 auto', height: 140, objectFit: 'contain', borderRadius: 12, marginBottom: 12, boxShadow: '0 2px 8px #1677ff22' }}
+                    />
+                  }
                   onClick={() => navigate(`/product/${bike.id}`)}
                 >
                   <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 4 }}>{bike.name}</div>

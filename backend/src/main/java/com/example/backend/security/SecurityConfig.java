@@ -71,7 +71,7 @@ public class SecurityConfig {
                     "/api/auth", 
                     "/api/auth/google",
                     "/api/auth/register", 
-                    "/api/bikes/all", 
+                    "/api/bikes/*", 
                     "/api/password-reset/request", 
                     "/api/password-reset/confirm").permitAll()
                 .anyRequest().authenticated()

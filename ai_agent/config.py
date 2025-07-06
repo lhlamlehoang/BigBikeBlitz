@@ -43,11 +43,25 @@ class Settings(BaseSettings):
     
     # Logging settings
     log_level: str = "INFO"
-    log_file: Optional[str] = None
     
     # Security settings
     api_key_header: str = "X-API-Key"
     api_key: Optional[str] = None
+    
+    # AI Model settings
+    anthropic_api_key: Optional[str] = None
+    ollama_base_url: str = "http://localhost:11434"
+    
+    # Demo mode settings
+    demo_mode: bool = False
+    
+    # Environment variables
+    database_url: Optional[str] = None
+    chroma_persist_directory: str = "./knowledge_base"
+    embedding_model: str = "text-embedding-ada-002"
+    scraping_delay: int = 1
+    max_retries: int = 3
+    log_file: Optional[str] = None
     
     class Config:
         env_file = ".env"

@@ -47,5 +47,45 @@ services:
     depends_on:
       - backend
 
+  ai_agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai_agent
+    container_name: ai_agent
+    restart: always
+    environment:
+      # AI Model Configuration - Using default values for demo
+      ANTHROPIC_API_KEY: sk-demo-key-for-testing
+      OLLAMA_BASE_URL: http://localhost:11434
+      
+      # Database Configuration
+      DATABASE_URL: sqlite:///ai_agent.db
+      
+      # Knowledge Base Configuration
+      CHROMA_PERSIST_DIRECTORY: ./knowledge_base
+      EMBEDDING_MODEL: text-embedding-ada-002
+      
+      # Web Scraping Configuration
+      SCRAPING_DELAY: 1
+      MAX_RETRIES: 3
+      
+      # Logging Configuration
+      LOG_LEVEL: INFO
+      LOG_FILE: ai_agent.log
+      
+      # Demo mode - will work without real API keys
+      DEMO_MODE: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ai_agent_data:/app/knowledge_base
+      - ai_agent_logs:/app/logs
+      - ai_agent_db:/app
+    depends_on:
+      - mysql
+
 volumes:
-  mysql_data: 
+  mysql_data:
+  ai_agent_data:
+  ai_agent_logs:
+  ai_agent_db: 

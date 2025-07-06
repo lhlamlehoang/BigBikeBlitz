@@ -38,6 +38,15 @@ A modern, professional motorcycle e-commerce platform built with React, TypeScri
 - **Error Tracking**: Comprehensive error monitoring
 - **Performance Metrics**: Page load times and user experience metrics
 
+### 🤖 **AI-Powered Features**
+- **Intelligent Chat Assistant**: AI-powered customer support and product recommendations
+- **Product Knowledge Base**: Comprehensive motorcycle information and specifications
+- **Smart Search**: AI-enhanced product search with natural language processing
+- **Personalized Recommendations**: Machine learning-based product suggestions
+- **Automated Data Collection**: Web scraping for real-time product information
+- **Conversation Management**: Context-aware chat sessions with memory
+- **Multi-Model Support**: Integration with various AI models (Claude, GPT, etc.)
+
 ### 🚀 **Professional Features**
 - **Newsletter Signup**: Lead generation and customer engagement
 - **Cookie Consent**: GDPR-compliant privacy management
@@ -64,12 +73,48 @@ A modern, professional motorcycle e-commerce platform built with React, TypeScri
 - **JWT** - Token-based authentication
 - **Maven** - Dependency management
 
+### AI Agent
+- **Python 3.10+** - AI and machine learning framework
+- **Anthropic Claude** - Advanced language model integration
+- **ChromaDB** - Vector database for knowledge storage
+- **FastAPI** - High-performance API framework
+- **SQLite** - Local database for conversation history
+- **Beautiful Soup** - Web scraping capabilities
+- **Celery** - Asynchronous task processing
+- **Redis** - Message broker and caching
+
 ## 🚀 Quick Start
 
-### Prerequisites
+### Option 1: One-Step Docker Setup (Recommended)
+```bash
+# Everything is pre-configured! Just run:
+docker-compose up --build
+```
+
+**Or use the startup scripts:**
+```bash
+# Linux/macOS:
+chmod +x start.sh
+./start.sh
+
+# Windows:
+start.bat
+```
+
+**Access the application:**
+- Frontend: http://localhost
+- Backend API: http://localhost:8080
+- AI Agent: http://localhost:8000
+- AI Health Check: http://localhost:8000/api/health
+
+### Option 2: Manual Setup
+If you prefer to run services individually:
+
+#### Prerequisites
 - Node.js 18+ and npm
 - Java 17+ and Maven
 - MySQL 8.0+ or PostgreSQL 13+
+- Python 3.10+
 
 ### Frontend Setup
 
@@ -100,6 +145,35 @@ mvn install
 mvn spring-boot:run
 ```
 
+### AI Agent Setup
+
+```bash
+# Navigate to ai_agent directory
+cd ai_agent
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your API keys and configuration
+
+# Initialize the knowledge base
+python knowledge_base.py
+
+# Start the AI agent
+python main.py
+```
+
 ### Environment Configuration
 
 Create `.env` files in both frontend and backend directories:
@@ -125,6 +199,28 @@ jwt.expiration=86400000
 server.port=8080
 ```
 
+**AI Agent (.env)**
+```env
+# AI Model Configuration
+ANTHROPIC_API_KEY=your_anthropic_api_key
+OLLAMA_BASE_URL=http://localhost:11434
+
+# Database Configuration
+DATABASE_URL=sqlite:///ai_agent.db
+
+# Knowledge Base Configuration
+CHROMA_PERSIST_DIRECTORY=./knowledge_base
+EMBEDDING_MODEL=text-embedding-ada-002
+
+# Web Scraping Configuration
+SCRAPING_DELAY=1
+MAX_RETRIES=3
+
+# Logging Configuration
+LOG_LEVEL=INFO
+LOG_FILE=ai_agent.log
+```
+
 ## 📁 Project Structure
 
 ```
@@ -146,6 +242,26 @@ BigBikeBlitz/
 │   │   ├── security/      # Security configuration
 │   │   └── config/        # Application configuration
 │   └── pom.xml           # Backend dependencies
+├── ai_agent/              # AI-powered chatbot and assistant
+│   ├── main.py            # Main AI agent application
+│   ├── chat_manager.py    # Conversation management
+│   ├── knowledge_base.py  # Knowledge base operations
+│   ├── database.py        # Database operations
+│   ├── website_scraper.py # Web scraping functionality
+│   ├── product_data.py    # Product data management
+│   ├── ollama_client.py   # AI model integration
+│   ├── config.py          # Configuration settings
+│   ├── requirements.txt   # Python dependencies
+│   ├── knowledge_base/    # Vector database storage
+│   └── venv/             # Python virtual environment
+├── docker-compose.yml     # Docker Compose configuration
+├── Dockerfile.backend     # Backend Docker configuration
+├── Dockerfile.frontend    # Frontend Docker configuration
+├── Dockerfile.ai_agent    # AI Agent Docker configuration
+├── start.sh              # Linux/macOS startup script
+├── start.bat             # Windows startup script
+├── setup-docker.sh       # Environment setup script (Linux/macOS)
+├── setup-docker.bat      # Environment setup script (Windows)
 └── README.md             # Project documentation
 ```
 
@@ -179,6 +295,36 @@ BigBikeBlitz/
 - Core Web Vitals measurement
 - Custom event tracking
 
+## 🤖 AI Agent Features
+
+### Intelligent Chat System
+- **Natural Language Processing**: Understands user queries in natural language
+- **Context Awareness**: Maintains conversation context across sessions
+- **Product Recommendations**: Suggests motorcycles based on user preferences
+- **Technical Support**: Provides detailed motorcycle specifications and advice
+- **Multi-turn Conversations**: Handles complex, multi-step interactions
+
+### Knowledge Management
+- **Vector Database**: Stores and retrieves motorcycle information efficiently
+- **Real-time Updates**: Automatically updates product information
+- **Web Scraping**: Collects current motorcycle data from various sources
+- **Data Validation**: Ensures accuracy and consistency of information
+- **Scalable Storage**: Handles large amounts of product data
+
+### AI Model Integration
+- **Claude Integration**: Advanced language model for natural conversations
+- **Multi-Model Support**: Can switch between different AI models
+- **Response Generation**: Creates human-like, informative responses
+- **Error Handling**: Graceful handling of AI model failures
+- **Rate Limiting**: Manages API calls efficiently
+
+### Conversation Management
+- **Session Persistence**: Saves conversation history for continuity
+- **User Preferences**: Learns and remembers user preferences
+- **Chat History**: Maintains detailed conversation logs
+- **Export Capabilities**: Allows users to export conversation data
+- **Privacy Controls**: Secure handling of user data
+
 ## 🔧 Development
 
 ### Code Quality
@@ -208,11 +354,38 @@ mvn clean package
 
 ## 🚀 Deployment
 
-### Docker Deployment
+### Docker Deployment (One-Step Setup)
 ```bash
-# Build and run with Docker Compose
+# Everything is pre-configured! Just run:
 docker-compose up --build
 ```
+
+**That's it!** The application will:
+- Build all containers automatically
+- Set up the database with sample data
+- Start all services (Frontend, Backend, AI Agent)
+- Work in demo mode without requiring API keys
+- Be available at the URLs below
+
+### Optional: Custom Configuration
+If you want to use real AI models, create a `.env` file:
+
+```env
+# AI Agent Configuration
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+OLLAMA_BASE_URL=http://localhost:11434
+
+# Optional: Additional AI Model Keys
+OPENAI_API_KEY=your_openai_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
+```
+
+### Docker Services
+The application runs the following services:
+- **MySQL Database** (Port 3306) - Database for the backend
+- **Backend API** (Port 8080) - Spring Boot REST API
+- **Frontend** (Port 80) - React application with Nginx
+- **AI Agent** (Port 8000) - FastAPI AI chatbot service
 
 ### Manual Deployment
 1. Build frontend: `npm run build`
