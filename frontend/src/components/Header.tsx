@@ -295,6 +295,12 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
           }}
           onClick={({ key }) => navigate(key)}
         />
+        {/* Admin Panel Link (only for ADMIN users) */}
+        {user && user.role === 'ADMIN' && (
+          <Button type="dashed" onClick={() => navigate('/admin')} style={{ marginRight: 8 }}>
+            Admin Panel
+          </Button>
+        )}
         {/* User Actions */}
         <Space size="middle">
           {/* Cart */}

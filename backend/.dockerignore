@@ -1,0 +1,13 @@
+target/
+.git/
+.idea/
+*.iml
+*.log
+logs/
+*.md
+*.bak
+*.swp
+*.tmp
+*.test.*
+test*/
+.DS_Store 

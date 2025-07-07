@@ -12,6 +12,7 @@ const OrdersPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) =>
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const backendUrl = "http://localhost:8080";
 
   useEffect(() => {
     setLoading(true);
@@ -72,7 +73,7 @@ const OrdersPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) =>
                         className="animated-scale-in"
                         onClick={() => navigate(`/product/${item.bike.id}`)}
                       >
-                        <img src={item.bike.image} alt={item.bike.name} style={{ width: '100%', height: 70, objectFit: 'cover', borderRadius: 8, marginBottom: 6 }} />
+                        <img src={item.bike.image.startsWith('/uploads/') ? backendUrl + item.bike.image : item.bike.image} alt={item.bike.name} style={{ width: '100%', height: 70, objectFit: 'cover', borderRadius: 8, marginBottom: 6 }} />
                         <div style={{ fontWeight: 600, fontSize: 15 }}>{item.bike.name}</div>
                         <div style={{ color: '#1677ff', fontWeight: 500 }}>${item.bike.price?.toLocaleString()}</div>
                         <div style={{ color: '#222', fontWeight: 500, fontSize: 14, marginTop: 4 }}>Qty: {item.quantity}</div>

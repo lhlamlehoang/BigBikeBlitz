@@ -43,10 +43,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("http://localhost:*");
-        configuration.addAllowedOrigin("http://localhost");
-        configuration.addAllowedOrigin("http://localhost:5173");
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedOrigin("http://localhost/");
+        configuration.addAllowedOrigin("http://localhost:80/");
+        configuration.addAllowedOrigin("http://localhost:5173/");
+        configuration.addAllowedOrigin("http://localhost:8080/");
         configuration.addAllowedOrigin("http://192.168.76.129:5173");
+        configuration.addAllowedOrigin("http://192.168.76.129");
+        configuration.addAllowedOrigin("http://192.168.76.129:80");
+        configuration.addAllowedOrigin("http://192.168.76.129:8080");
         configuration.addAllowedOrigin("http://192.168.137.1:5173");
         configuration.addAllowedOrigin("http://127.0.0.1:5173");
         configuration.addAllowedOrigin("http://172.28.192.1:5173");
@@ -72,6 +77,7 @@ public class SecurityConfig {
                     "/api/auth/google",
                     "/api/auth/register", 
                     "/api/bikes/*", 
+                    "/uploads/**",
                     "/api/password-reset/request", 
                     "/api/password-reset/confirm").permitAll()
                 .anyRequest().authenticated()

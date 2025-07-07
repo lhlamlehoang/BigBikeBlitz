@@ -1,8 +1,12 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# C extensions
 *.so
+
+# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -15,18 +19,80 @@ lib64/
 parts/
 sdist/
 var/
-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 
 # Virtual environments
 venv/
-env/
 ENV/
+env/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Git
+.git/
+.gitignore
+
+# Local data
+knowledge_base/*
+!knowledge_base/*.md
+
+# Logs
+*.log
+
+# Misc
+*.bak
+*.swp
+*.tmp
+
+# Exclude test files
+test*/
+*.test.*
+
+# Exclude README and docs if not needed
+README.md
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -36,7 +102,6 @@ ENV/
 Thumbs.db
 
 # Logs
-*.log
 logs/
 
 # Database
@@ -48,7 +113,6 @@ logs/
 *.temp
 
 # Documentation
-README.md
 *.md
 
 # Test files
@@ -56,17 +120,12 @@ tests/
 test_*
 *_test.py
 
-# Git
-.git/
-.gitignore
-
 # Docker
 Dockerfile*
 docker-compose*
 .dockerignore
 
 # Large data files
-knowledge_base/
 *.bin
 *.pkl
 *.h5

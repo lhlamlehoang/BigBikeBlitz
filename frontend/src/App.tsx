@@ -74,7 +74,7 @@ const bmwBikes: Bike[] = [
     id: 4,
     name: 'BMW S1000 RR',
     price: 16995,
-    image: '../public/assets/bmw-s1000-rr.jpg',
+    image: '/uploads/bmw-s1000-rr.jpg',
     brand: 'BMW',
     type: 'Sport',
   },
@@ -82,7 +82,7 @@ const bmwBikes: Bike[] = [
     id: 5,
     name: 'BMW R 1250 GS',
     price: 17995,
-    image: '/assets/bmw-r1250gs.jpg',
+    image: '/uploads/bmw-r1250gs.jpg',
     brand: 'BMW',
     type: 'Adventure',
   },
@@ -90,7 +90,7 @@ const bmwBikes: Bike[] = [
     id: 6,
     name: 'BMW F 900 R',
     price: 8950,
-    image: '/assets/bmw-f900r.jpg',
+    image: '/uploads/bmw-f900r.jpg',
     brand: 'BMW',
     type: 'Roadster',
   },
@@ -98,7 +98,7 @@ const bmwBikes: Bike[] = [
     id: 7,
     name: 'BMW G 310 R',
     price: 5750,
-    image: '/assets/bmw-g310r.jpg',
+    image: '/uploads/bmw-g310r.jpg',
     brand: 'BMW',
     type: 'Roadster',
   },
@@ -106,19 +106,19 @@ const bmwBikes: Bike[] = [
 
 const heroBikes = [
   {
-    image: '../public/assets/bmw-s1000-rr.jpg',
+    image: '/uploads/bmw-s1000-rr.jpg',
     name: 'BMW S 1000 RR',
   },
   {
-    image: '../public/assets/bmw-r1250-gs.jpg',
+    image: '/uploads/bmw-r1250-gs.jpg',
     name: 'BMW R 1250 GS',
   },
   {
-    image: '../public/assets/bmw-f900-r.jpg',
+    image: '/uploads/bmw-f900-r.jpg',
     name: 'BMW F 900 R',
   },
   {
-    image: '../public/assets/bmw-g310-r.jpg',
+    image: '/uploads/bmw-g310-r.jpg',
     name: 'BMW G 310 R',
   },
 ];

@@ -4,6 +4,8 @@ import { Button, Row, Col, Spin, message, Divider, Image, Carousel, InputNumber,
 import { ShoppingCartOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import api from '../auth/authFetch';
 
+const backendUrl = "http://localhost:8080";
+
 interface Bike {
   id: number;
   name: string;
@@ -72,7 +74,7 @@ const ProductDetailsPage: React.FC<{
           <Carousel dots style={{ background: '#f7f9fb', borderRadius: 12, marginBottom: 16 }}>
             {images.map((img, idx) => (
               <div key={idx} style={{ textAlign: 'center' }}>
-                <Image src={img} alt={bike.name} style={{ maxHeight: 480, maxWidth: '100%', width: '100%', borderRadius: 12, objectFit: 'contain', margin: '0 auto' }} />
+                <Image src={backendUrl + img} alt={bike.name} style={{ maxHeight: 480, maxWidth: '100%', width: '100%', borderRadius: 12, objectFit: 'contain', margin: '0 auto' }} />
               </div>
             ))}
           </Carousel>
@@ -114,7 +116,7 @@ const ProductDetailsPage: React.FC<{
               key={b.id}
               hoverable
               style={{ width: 240, borderRadius: 16, boxShadow: '0 2px 12px #1677ff11', cursor: 'pointer' }}
-              cover={<img alt={b.name} src={b.image} style={{ height: 160, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} />}
+              cover={<img alt={b.name} src={backendUrl + b.image} style={{ height: 160, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} />}
               onClick={() => navigate(`/product/${b.id}`)}
             >
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{b.name}</div>

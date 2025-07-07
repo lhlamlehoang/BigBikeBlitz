@@ -4,6 +4,7 @@ import { TeamOutlined, TrophyOutlined, SafetyCertificateOutlined, HeartOutlined 
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Paragraph, Text } = Typography;
+const backendUrl = "http://localhost:8080";
 
 const AboutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const AboutPage: React.FC = () => {
     {
       name: 'Lam Le',
       position: 'CEO & Founder',
-      avatar: '../../public/assets/ceo-biker.png',
+      avatar: backendUrl + '/uploads/ceo-biker.png',
       description: 'Passionate motorcyclist with 10+ years of experience in the industry.'
     }
   ];

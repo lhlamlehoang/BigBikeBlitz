@@ -7,13 +7,13 @@ services:
       MYSQL_ROOT_PASSWORD: Bum_123321
       MYSQL_DATABASE: bigbikeblitz
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile.backend
     container_name: backend
     restart: always
@@ -38,7 +38,7 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile.frontend
     container_name: frontend
     restart: always
@@ -49,7 +49,7 @@ services:
 
   ai_agent:
     build:
-      context: .
+      context: ./ai_agent
       dockerfile: Dockerfile.ai_agent
     container_name: ai_agent
     restart: always

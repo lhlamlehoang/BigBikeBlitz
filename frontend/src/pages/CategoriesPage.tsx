@@ -66,6 +66,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   const [quantityMap, setQuantityMap] = useState<{ [bikeId: number]: number }>({});
   const navigate = useNavigate();
   const location = useLocation();
+  const backendUrl = "http://localhost:8080";
 
   // Read search parameter from URL
   useEffect(() => {
@@ -178,7 +179,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                   styles={{ body: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 260, padding: 16 } }}
                   cover={
                     <img
-                      src={bike.image}
+                      src={bike.image.startsWith('/uploads/') ? backendUrl + bike.image : bike.image}
                       alt={bike.name}
                       style={{ display: 'block', margin: '0 auto', height: 140, objectFit: 'contain', borderRadius: 12, marginBottom: 12, boxShadow: '0 2px 8px #1677ff22' }}
                     />
@@ -229,7 +230,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               height: 320,
             }}>
               <img
-                src={selectedBike.image}
+                src={selectedBike.image.startsWith('/uploads/') ? backendUrl + selectedBike.image : selectedBike.image}
                 alt={selectedBike.name}
                 style={{
                   width: '100%',

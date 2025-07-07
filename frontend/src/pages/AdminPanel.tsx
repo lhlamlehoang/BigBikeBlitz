@@ -91,9 +91,13 @@ const AdminPanel: React.FC = () => {
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
+        const token = localStorage.getItem('token'); // Adjust if you use a different storage or context
         const res = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
         });
         if (!res.ok) {
           message.error('Image upload failed');
@@ -251,7 +255,7 @@ const AdminPanel: React.FC = () => {
                       setSelectedFileName(file.name);
                       setSelectedImage(URL.createObjectURL(file));
                       // Set the image field in the form
-                      (document.querySelector('input[name="image"]') as HTMLInputElement).value = `../public/assets/${file.name}`;
+                      (document.querySelector('input[name="image"]') as HTMLInputElement).value = `/uploads/${file.name}`;
                     }
                   }}
                 />
@@ -262,9 +266,7 @@ const AdminPanel: React.FC = () => {
                 )}
                 {selectedFileName && (
                   <div style={{ marginTop: 8, color: '#1677ff', fontWeight: 500 }}>
-                    Set image path: <span style={{ fontFamily: 'monospace' }}>{`../public/assets/${selectedFileName}`}</span>
-                    <br />
-                    <span style={{ color: '#ff4d4f', fontWeight: 400 }}>Please manually copy this file to <b>public/assets</b> in your project folder.</span>
+                    Set image path: <span style={{ fontFamily: 'monospace' }}>{`/uploads/${selectedFileName}`}</span>
                   </div>
                 )}
               </Form.Item>

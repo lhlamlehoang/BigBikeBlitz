@@ -25,6 +25,7 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
   const [shippingMethod, setShippingMethod] = useState('Standard');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const navigate = useNavigate();
+  const backendUrl = "http://localhost:8080";
 
   useEffect(() => {
     setLoading(true);
@@ -131,7 +132,7 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
             {
               title: 'Image',
               dataIndex: ['bike', 'image'],
-              render: (image: string) => image ? <img src={image} alt="Bike" style={{ width: 80, height: 48, objectFit: 'cover', borderRadius: 8, boxShadow: '0 2px 8px #e0e0e0' }} /> : null,
+              render: (image: string) => image ? <img src={image.startsWith('/uploads/') ? backendUrl + image : image} alt="Bike" style={{ width: 80, height: 48, objectFit: 'cover', borderRadius: 8, boxShadow: '0 2px 8px #e0e0e0' }} /> : null,
             },
             { title: 'Name', dataIndex: ['bike', 'name'], render: (name: string) => <span style={{ fontWeight: 600, fontSize: 18 }}>{name}</span> },
             { title: 'Price', dataIndex: ['bike', 'price'], render: (price: number) => <span style={{ color: '#1677ff', fontWeight: 500 }}>${price.toLocaleString()}</span> },

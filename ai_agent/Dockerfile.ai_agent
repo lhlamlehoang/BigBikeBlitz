@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy optimized requirements
-COPY ai_agent/requirements-optimized.txt requirements.txt
+COPY requirements-optimized.txt requirements.txt
 
 # Create virtual environment and install dependencies
 RUN python -m venv /opt/venv
@@ -40,7 +40,7 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy AI agent source code
-COPY ai_agent/ .
+COPY . .
 
 # Create necessary directories
 RUN mkdir -p knowledge_base logs
