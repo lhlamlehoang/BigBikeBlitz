@@ -21,6 +21,7 @@ import { useTheme } from '../contexts/ThemeContext';
 const { Header: AntHeader } = Layout;
 const { Search } = Input;
 const { Text } = Typography;
+const backendUrl = 'http://localhost:8080'
 
 interface HeaderProps {
   collapsed: boolean;
@@ -206,7 +207,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
       <div style={{ display: 'flex', alignItems: 'center', height: 80 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', height: '100%' }}>
           <img 
-            src="/assets/logo.jpg" 
+            src={backendUrl + "/uploads/logo.jpg"} 
             alt="Big Bike Blitz" 
             style={{ 
               height: 50, 

@@ -12,6 +12,7 @@ import { useAuth } from '../auth/AuthContext';
 
 const { TextArea } = Input;
 const { Text, Title } = Typography;
+const backendUrl = 'http://localhost:8080'
 
 interface ChatMessage {
   id: string;
@@ -66,7 +67,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           setIsConnected(true);
           setAgentInfo({
             name: 'BigBikeBlitz AI',
-            avatar: '/assets/logo.jpg',
+            avatar: backendUrl + '/uploads/logo.jpg',
             status: 'online'
           });
           

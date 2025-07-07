@@ -3,13 +3,15 @@ import asyncio
 import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+import requests
+import os
 
 logger = logging.getLogger(__name__)
 
 class OllamaClient:
     def __init__(self, model_name: str = "llama3.2:1b"):
         self.model_name = model_name
-        self.base_url = "http://localhost:11434"
+        self.base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         self.client = ollama.Client(host=self.base_url)
         self._model_loaded = False
         self._response_cache = {}
@@ -17,21 +19,23 @@ class OllamaClient:
     async def check_health(self) -> bool:
         """Check if Ollama is running and model is available"""
         try:
-            # Check if Ollama is running
+            # Check if Ollama is running (use / endpoint)
+            response = requests.get(f"{self.base_url}/", timeout=3)
+            if response.status_code != 200 or "Ollama is running" not in response.text:
+                logger.error(f"Ollama health check failed: Unexpected response: {response.text}")
+                return False
+            # Check if model is available
             models = self.client.list()
             model_names = [model['name'] for model in models['models']]
-            
             if self.model_name not in model_names:
                 logger.warning(f"Model {self.model_name} not found. Available models: {model_names}")
                 return False
-            
             # Preload the model for faster responses
             if not self._model_loaded:
                 logger.info(f"Preloading model: {self.model_name}")
                 await asyncio.to_thread(self.client.pull, model=self.model_name)
                 self._model_loaded = True
                 logger.info(f"Model {self.model_name} loaded successfully")
-                
             return True
         except Exception as e:
             logger.error(f"Ollama health check failed: {e}")

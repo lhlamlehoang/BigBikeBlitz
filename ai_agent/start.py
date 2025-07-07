@@ -15,7 +15,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from main import app
 from ollama_client import OllamaClient
-from knowledge_base import KnowledgeBase
 from website_scraper import WebsiteScraper
 from database import DatabaseManager
 import uvicorn
@@ -64,55 +63,33 @@ async def initialize_database():
         logger.error(f"❌ Failed to initialize database: {e}")
         return False
 
-async def check_knowledge_base():
-    """Check if knowledge base has data"""
-    try:
-        kb = KnowledgeBase()
-        has_data = await kb.has_data()
-        
-        if not has_data:
-            logger.warning("⚠️  Knowledge base is empty. Will scrape website on startup.")
-            return False
-        
-        stats = await kb.get_stats()
-        logger.info(f"✅ Knowledge base has {stats.get('total_documents', 0)} documents")
-        return True
-        
-    except Exception as e:
-        logger.error(f"❌ Failed to check knowledge base: {e}")
-        return False
+
 
 async def scrape_website_if_needed():
     """Scrape website if knowledge base is empty"""
     try:
-        kb = KnowledgeBase()
-        has_data = await kb.has_data()
+        logger.info("🌐 Starting website scraping...")
+        scraper = WebsiteScraper()
         
-        if not has_data:
-            logger.info("🌐 Starting website scraping...")
-            scraper = WebsiteScraper()
-            
-            # Scrape main pages
-            pages = [
-                "http://localhost:5173",
-                "http://localhost:5173/categories",
-                "http://localhost:5173/about",
-                "http://localhost:5173/contact",
-                "http://localhost:5173/help"
-            ]
-            
-            for page in pages:
-                try:
-                    data = await scraper.scrape_page(page)
-                    if data:
-                        await kb.add_document(data)
-                        logger.info(f"✅ Scraped: {page}")
-                except Exception as e:
-                    logger.warning(f"⚠️  Failed to scrape {page}: {e}")
-            
-            logger.info("✅ Website scraping completed")
-        else:
-            logger.info("✅ Knowledge base already has data")
+        # Scrape main pages
+        pages = [
+            "http://localhost:5173",
+            "http://localhost:5173/categories",
+            "http://localhost:5173/about",
+            "http://localhost:5173/contact",
+            "http://localhost:5173/help"
+        ]
+        
+        for page in pages:
+            try:
+                data = await scraper.scrape_page(page)
+                if data:
+                    await kb.add_document(data)
+                    logger.info(f"✅ Scraped: {page}")
+            except Exception as e:
+                logger.warning(f"⚠️  Failed to scrape {page}: {e}")
+        
+        logger.info("✅ Website scraping completed")
             
     except Exception as e:
         logger.error(f"❌ Failed to scrape website: {e}")
@@ -149,9 +126,6 @@ async def main():
     if not await initialize_database():
         logger.error("❌ Cannot start without database. Please fix the issues above.")
         sys.exit(1)
-    
-    # Check knowledge base
-    await check_knowledge_base()
     
     # Scrape website if needed
     await scrape_website_if_needed()

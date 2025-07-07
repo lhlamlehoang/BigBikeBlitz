@@ -1,61 +1,62 @@
-# Multi-stage build to reduce final image size
+# --------------------
+# Builder stage
+# --------------------
 FROM python:3.10-slim as builder
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for building
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
+# Pre-install build tools only for this stage
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy optimized requirements
-COPY requirements-optimized.txt requirements.txt
+# Copy only requirements first for better caching
+COPY requirements.txt .
 
 # Create virtual environment and install dependencies
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies with optimizations
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
+# --------------------
 # Production stage
+# --------------------
 FROM python:3.10-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install only runtime system dependencies
-RUN apt-get update && apt-get install -y \
+# Copy only necessary runtime system tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean \
-    && apt-get autoremove -y
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy virtual environment from builder stage
+# Copy virtual environment from builder
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy AI agent source code
+# Copy source code
 COPY . .
+# Copy the scraped website data file
+COPY scraped_website.json ./scraped_website.json
 
-# Create necessary directories
-RUN mkdir -p knowledge_base logs
+# Create runtime dirs
+RUN mkdir -p logs
 
-# Set environment variables
-ENV PYTHONPATH=/app
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+# Environment config
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-# Expose port
+# Expose service port
 EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=2 \
+    CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the AI agent with uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"] 
+# Run the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    
