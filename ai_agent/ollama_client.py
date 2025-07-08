@@ -30,12 +30,6 @@ class OllamaClient:
             if self.model_name not in model_names:
                 logger.warning(f"Model {self.model_name} not found. Available models: {model_names}")
                 return False
-            # Preload the model for faster responses
-            if not self._model_loaded:
-                logger.info(f"Preloading model: {self.model_name}")
-                await asyncio.to_thread(self.client.pull, model=self.model_name)
-                self._model_loaded = True
-                logger.info(f"Model {self.model_name} loaded successfully")
             return True
         except Exception as e:
             logger.error(f"Ollama health check failed: {e}")
@@ -74,8 +68,8 @@ class OllamaClient:
                 options={
                     "temperature": 0.7,
                     "top_p": 0.9,
-                    "max_tokens": 150,  # Very short for speed
-                    "num_predict": 150,
+                    "max_tokens": 300, 
+                    "num_predict": 300,
                     "top_k": 20,
                     "repeat_penalty": 1.1
                 }

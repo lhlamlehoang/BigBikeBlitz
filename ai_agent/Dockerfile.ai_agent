@@ -10,6 +10,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only requirements first for better caching
@@ -19,6 +20,11 @@ COPY requirements.txt .
 RUN python -m venv /opt/venv && \
     /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
     /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# Copy the download_blobs.sh script
+COPY download_blobs.sh /app/download_blobs.sh
+RUN chmod +x /app/download_blobs.sh
+RUN /app/download_blobs.sh
 
 # --------------------
 # Production stage
@@ -48,7 +54,8 @@ RUN mkdir -p logs
 # Environment config
 ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+    PYTHONDONTWRITEBYTECODE=1 \
+    OLLAMA_MODEL=llama3.2:1b
 
 # Expose service port
 EXPOSE 8000
@@ -57,6 +64,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=2 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the application
+# Run the startup script
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
     

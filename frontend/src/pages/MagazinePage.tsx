@@ -297,32 +297,6 @@ const MagazinePage: React.FC = () => {
           ))}
         </Row>
       </div>
-
-      {/* Newsletter Signup */}
-      <Card style={{ marginTop: 48, borderRadius: 12, background: '#f8f9fa' }}>
-        <div style={{ textAlign: 'center' }}>
-          <Title level={3} style={{ marginBottom: 16 }}>
-            Stay Updated with Our Newsletter
-          </Title>
-          <Paragraph style={{ color: '#666', marginBottom: 24 }}>
-            Get the latest motorcycle news, reviews, and tips delivered to your inbox every week.
-          </Paragraph>
-          <Row gutter={[16, 16]} justify="center">
-            <Col xs={24} md={12}>
-              <Input
-                placeholder="Enter your email address"
-                size="large"
-                style={{ marginBottom: 16 }}
-              />
-            </Col>
-            <Col xs={24} md={6}>
-              <Button type="primary" size="large" block>
-                Subscribe
-              </Button>
-            </Col>
-          </Row>
-        </div>
-      </Card>
     </div>
   );
 };

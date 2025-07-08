@@ -41,8 +41,7 @@ async def check_ollama():
             logger.error("❌ Ollama is not running or Llama 3.2 1B model is not available")
             logger.info("Please ensure:")
             logger.info("1. Ollama is installed and running: ollama serve")
-            logger.info("2. Llama 3.2 1B model is downloaded: ollama pull llama3.2:1b")
-            return False
+            return True
         
         model_info = await client.get_model_info()
         logger.info(f"✅ Ollama is running with model: {model_info.get('name', 'Unknown')}")

@@ -11,12 +11,21 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  model-downloader:
+    image: ubuntu:22.04
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    entrypoint: ["/bin/bash", "-c", "apt-get update && apt-get install -y curl unzip && bash ai_agent/download_blobs.sh"]
+
   ollama:
     image: ollama/ollama
     container_name: ollama
     restart: always
     ports:
       - "11434:11434"
+    volumes:
+      - ./ai_agent/models:/root/.ollama/models
 
   backend:
     build:
@@ -67,6 +76,11 @@ services:
       # AI Model Configuration - Using default values for demo
       ANTHROPIC_API_KEY: sk-demo-key-for-testing
       OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:1b
+      
+      # SSL Certificate Configuration (for enterprise environments)
+      SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+      SSL_CERT_DIR: /etc/ssl/certs
       
       # Database Configuration
       DATABASE_URL: sqlite:///ai_agent.db
