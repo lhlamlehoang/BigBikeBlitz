@@ -49,6 +49,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://localhost:5173/");
         configuration.addAllowedOrigin("http://localhost:8080/");
         configuration.addAllowedOrigin("http://192.168.76.129:5173");
+        configuration.addAllowedOrigin("http://192.168.76.129:3000");
         configuration.addAllowedOrigin("http://192.168.76.129");
         configuration.addAllowedOrigin("http://192.168.76.129:80");
         configuration.addAllowedOrigin("http://192.168.76.129:8080");
@@ -75,6 +76,8 @@ public class SecurityConfig {
                     "/register", 
                     "/api/auth", 
                     "/api/auth/google",
+                    "/api/auth/google/debug",
+                    "/api/auth/google/test",
                     "/api/auth/register", 
                     "/api/bikes/*", 
                     "/uploads/**",

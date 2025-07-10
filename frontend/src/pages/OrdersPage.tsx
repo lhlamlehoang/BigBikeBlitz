@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import api from '../auth/authFetch';
 import { useNavigate } from 'react-router-dom';
 import { DollarCircleOutlined } from '@ant-design/icons';
+import { BACKEND_URL } from '../config';
 
 const { Title, Text } = Typography;
 
@@ -12,7 +13,6 @@ const OrdersPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) =>
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const backendUrl = "http://localhost:8080";
 
   useEffect(() => {
     setLoading(true);
@@ -23,7 +23,10 @@ const OrdersPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) =>
     <div style={{ maxWidth: 1000, margin: '40px auto', padding: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <Title level={2} style={{ color: '#1677ff', margin: 0, letterSpacing: 1 }}>Your Orders</Title>
-        <Button type="default" size="large" style={{ fontWeight: 600, fontSize: 18, borderRadius: 8, background: '#f7f9fb', border: '1px solid #1677ff', color: '#1677ff', transition: 'background 0.3s' }} onClick={() => navigate('/cart')}>
+        <Button type="default" size="large" style={{ fontWeight: 600, fontSize: 18, borderRadius: 8, background: 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)', color: '#fff', border: 'none', transition: 'background 0.3s' }}
+          onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #67e8f9 0%, #2196f3 100%)'}
+          onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)'}
+          onClick={() => navigate('/cart')}>
           Back to Cart
         </Button>
       </div>
@@ -73,7 +76,7 @@ const OrdersPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) =>
                         className="animated-scale-in"
                         onClick={() => navigate(`/product/${item.bike.id}`)}
                       >
-                        <img src={item.bike.image.startsWith('/uploads/') ? backendUrl + item.bike.image : item.bike.image} alt={item.bike.name} style={{ width: '100%', height: 70, objectFit: 'cover', borderRadius: 8, marginBottom: 6 }} />
+                        <img src={item.bike.image && item.bike.image.startsWith('/uploads/') ? BACKEND_URL + item.bike.image : item.bike.image} alt={item.bike.name} style={{ width: '100%', height: 70, objectFit: 'cover', borderRadius: 8, marginBottom: 6 }} />
                         <div style={{ fontWeight: 600, fontSize: 15 }}>{item.bike.name}</div>
                         <div style={{ color: '#1677ff', fontWeight: 500 }}>${item.bike.price?.toLocaleString()}</div>
                         <div style={{ color: '#222', fontWeight: 500, fontSize: 14, marginTop: 4 }}>Qty: {item.quantity}</div>
@@ -83,10 +86,21 @@ const OrdersPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) =>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
                   <Button
-                    type="primary"
                     icon={<DollarCircleOutlined />}
                     size="large"
-                    style={{ borderRadius: 8, fontWeight: 600, fontSize: 18, boxShadow: '0 2px 12px #1677ff33', transition: 'transform 0.2s', animation: 'fadeInUp 0.7s cubic-bezier(.23,1.12,.32,1)' }}
+                    style={{
+                      borderRadius: 8,
+                      fontWeight: 600,
+                      fontSize: 18,
+                      background: 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)',
+                      color: '#fff',
+                      border: 'none',
+                      boxShadow: '0 2px 12px #1677ff33',
+                      transition: 'transform 0.2s, background 0.3s',
+                      animation: 'fadeInUp 0.7s cubic-bezier(.23,1.12,.32,1)',
+                    }}
+                    onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #67e8f9 0%, #2196f3 100%)'}
+                    onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)'}
                     onClick={() => navigate('/payment', { state: { order } })}
                   >
                     Pay Now

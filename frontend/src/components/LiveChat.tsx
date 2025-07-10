@@ -9,10 +9,10 @@ import {
   SmileOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../auth/AuthContext';
+import { BACKEND_URL } from '../config';
 
 const { TextArea } = Input;
 const { Text, Title } = Typography;
-const backendUrl = 'http://localhost:8080'
 
 interface ChatMessage {
   id: string;
@@ -67,7 +67,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           setIsConnected(true);
           setAgentInfo({
             name: 'BigBikeBlitz AI',
-            avatar: backendUrl + '/uploads/logo.jpg',
+            avatar: BACKEND_URL + '/uploads/logo.jpg',
             status: 'online'
           });
           
@@ -211,13 +211,13 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         </div>
       }
       placement="right"
-      width={400}
+      width={'40vw'}
       open={isOpen}
       onClose={onClose}
       maskClosable={false}
       styles={{
         header: { padding: '16px 24px' },
-        body: { padding: 0 }
+        body: { padding: 0, minWidth: 400, maxWidth: 900 }
       }}
     >
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -243,37 +243,44 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
                   style={{
                     marginBottom: 16,
                     display: 'flex',
-                    justifyContent: message.sender === 'user' ? 'flex-end' : 'flex-start'
+                    justifyContent: message.sender === 'user' ? 'flex-end' : 'flex-start',
                   }}
                 >
                   <div style={{
-                    maxWidth: '80%',
                     display: 'flex',
                     flexDirection: message.sender === 'user' ? 'row-reverse' : 'row',
                     alignItems: 'flex-end',
-                    gap: 8
+                    gap: 8,
                   }}>
-                    {message.sender === 'agent' && (
-                      <Avatar 
-                        size={32} 
-                        src={message.agentAvatar || agentInfo?.avatar}
-                        icon={<CustomerServiceOutlined />}
-                      />
-                    )}
+                    {/* Avatar always visible */}
+                    <div style={{ width: 36, display: 'flex', justifyContent: 'center' }}>
+                      {message.sender === 'agent' ? (
+                        <Avatar 
+                          size={32} 
+                          src={message.agentAvatar || agentInfo?.avatar}
+                          icon={<CustomerServiceOutlined />}
+                        />
+                      ) : (
+                        <Avatar size={32} icon={<UserOutlined />} />
+                      )}
+                    </div>
+                    {/* Message bubble */}
                     <div style={{
                       background: message.sender === 'user' ? '#1677ff' : '#fff',
                       color: message.sender === 'user' ? '#fff' : '#333',
                       padding: '12px 16px',
                       borderRadius: 18,
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      wordBreak: 'break-word'
+                      wordBreak: 'break-word',
+                      maxWidth: '80vw',
+                      minWidth: 0,
                     }}>
                       <div>{message.text}</div>
                       <div style={{
                         fontSize: 11,
                         opacity: 0.7,
                         marginTop: 4,
-                        textAlign: message.sender === 'user' ? 'right' : 'left'
+                        textAlign: message.sender === 'user' ? 'right' : 'left',
                       }}>
                         {message.timestamp.toLocaleTimeString([], { 
                           hour: '2-digit', 
@@ -287,7 +294,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
               
               {isTyping && (
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
-                  <Avatar size={32} icon={<CustomerServiceOutlined />} />
+                  <Avatar size={32} src={BACKEND_URL + '/uploads/logo.jpg'} />
                   <div style={{
                     background: '#fff',
                     padding: '12px 16px',
@@ -348,11 +355,22 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
               />
             </div>
             <Button
-              type="primary"
               icon={<SendOutlined />}
               onClick={sendMessage}
               disabled={!inputMessage.trim() || !isConnected}
-              style={{ borderRadius: '50%', width: 40, height: 40 }}
+              style={{ 
+                borderRadius: '50%', 
+                width: 40, 
+                height: 40, 
+                background: 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)',
+                border: 'none', 
+                color: '#fff',
+                fontWeight: 700,
+                boxShadow: '0 2px 12px rgba(33,150,243,0.10)',
+                transition: 'background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s',
+              }}
+              onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #67e8f9 0%, #2196f3 100%)'}
+              onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)'}
             />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Spin, Modal, Descriptions } from 'antd';
 import { ShoppingCartOutlined, EditOutlined, DeleteOutlined, PlusOutlined, LeftOutlined, RightOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { BACKEND_URL } from '../config';
 
 interface Bike {
   id: number;
@@ -61,7 +62,6 @@ const HomePage: React.FC<HomePageProps> = ({
   wishlist = [],
 }) => {
   const [viewBike, setViewBike] = useState<Bike | null>(null);
-  const backendUrl = "http://localhost:8080";
 
   useEffect(() => {
     // Intersection Observer for swipe-up animation
@@ -81,7 +81,7 @@ const HomePage: React.FC<HomePageProps> = ({
   return (
     <>
       <div className="hero-section-bg" style={{
-        backgroundImage: `url(${backendUrl + heroBikes[heroIndex].image})`,
+        backgroundImage: `url(${BACKEND_URL + heroBikes[heroIndex].image})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         position: 'relative',
@@ -119,7 +119,7 @@ const HomePage: React.FC<HomePageProps> = ({
             return (
               <div className="vertical-bike-section swipe-up-on-scroll" key={bike.id} style={{ display: 'flex', flexDirection: isEven ? 'row' : 'row-reverse', alignItems: 'center', justifyContent: 'center', margin: '64px 0', gap: 64, opacity: 0, transform: 'translateY(60px)', transition: 'opacity 0.7s, transform 0.7s' }}>
                 <div className="vertical-bike-image" style={{ flex: '0 0 700px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 400 }}>
-                  <img src={bike.image.startsWith('/uploads/') ? backendUrl + bike.image : bike.image} alt={bike.name} style={{ width: 640, height: 400, objectFit: 'cover', borderRadius: 24, boxShadow: '0 8px 32px rgba(22,119,255,0.18)', filter: 'brightness(1)', transition: 'transform 0.2s' }} />
+                  <img src={bike.image.startsWith('/uploads/') ? BACKEND_URL + bike.image : bike.image} alt={bike.name} style={{ width: 640, height: 400, objectFit: 'cover', borderRadius: 24, boxShadow: '0 8px 32px rgba(22,119,255,0.18)', filter: 'brightness(1)', transition: 'transform 0.2s' }} />
                 </div>
                 <div className="vertical-bike-info" style={{ flex: 1, background: 'none', borderRadius: 16, padding: '32px 40px', minWidth: 320, color: '#003580', zIndex: 2 }}>
                   <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: 2, color: '#1677ff', marginBottom: 8, textTransform: 'uppercase' }}>{bike.brand}</div>
@@ -144,7 +144,7 @@ const HomePage: React.FC<HomePageProps> = ({
         {viewBike && (
           <Descriptions bordered column={1} size="middle">
             <Descriptions.Item label="Image">
-              <img src={viewBike.image.startsWith('/uploads/') ? backendUrl + viewBike.image : viewBike.image} alt={viewBike.name} style={{ width: 180, borderRadius: 8 }} />
+              <img src={viewBike.image.startsWith('/uploads/') ? BACKEND_URL + viewBike.image : viewBike.image} alt={viewBike.name} style={{ width: 180, borderRadius: 8 }} />
             </Descriptions.Item>
             <Descriptions.Item label="Brand">{viewBike.brand}</Descriptions.Item>
             <Descriptions.Item label="Type">{viewBike.type}</Descriptions.Item>

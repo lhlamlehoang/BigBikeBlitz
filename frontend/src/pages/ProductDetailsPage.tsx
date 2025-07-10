@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Row, Col, Spin, message, Divider, Image, Carousel, InputNumber, Card } from 'antd';
 import { ShoppingCartOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import api from '../auth/authFetch';
-
-const backendUrl = "http://localhost:8080";
+import { BACKEND_URL } from '../config';
 
 interface Bike {
   id: number;
@@ -68,13 +67,13 @@ const ProductDetailsPage: React.FC<{
 
   return (
     <div style={{ maxWidth: 1100, margin: '32px auto', background: '#fff', borderRadius: 16, boxShadow: '0 4px 24px #1677ff22', padding: 32 }}>
-      <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/categories')} style={{ marginBottom: 24 }}>Back</Button>
+      <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)} style={{ marginBottom: 24 }}>Back</Button>
       <Row gutter={32}>
         <Col xs={24} md={10}>
           <Carousel dots style={{ background: '#f7f9fb', borderRadius: 12, marginBottom: 16 }}>
             {images.map((img, idx) => (
               <div key={idx} style={{ textAlign: 'center' }}>
-                <Image src={backendUrl + img} alt={bike.name} style={{ maxHeight: 480, maxWidth: '100%', width: '100%', borderRadius: 12, objectFit: 'contain', margin: '0 auto' }} />
+                <Image src={BACKEND_URL + img} alt={bike.name} style={{ maxHeight: 480, maxWidth: '100%', width: '100%', borderRadius: 12, objectFit: 'contain', margin: '0 auto' }} />
               </div>
             ))}
           </Carousel>
@@ -116,7 +115,7 @@ const ProductDetailsPage: React.FC<{
               key={b.id}
               hoverable
               style={{ width: 240, borderRadius: 16, boxShadow: '0 2px 12px #1677ff11', cursor: 'pointer' }}
-              cover={<img alt={b.name} src={backendUrl + b.image} style={{ height: 160, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} />}
+              cover={<img alt={b.name} src={BACKEND_URL + b.image} style={{ height: 160, objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} />}
               onClick={() => navigate(`/product/${b.id}`)}
             >
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{b.name}</div>

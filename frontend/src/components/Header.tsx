@@ -17,11 +17,12 @@ import {
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { BACKEND_URL } from '../config';
 
 const { Header: AntHeader } = Layout;
 const { Search } = Input;
 const { Text } = Typography;
-const backendUrl = 'http://localhost:8080'
+const backendUrl = BACKEND_URL;
 
 interface HeaderProps {
   collapsed: boolean;
@@ -207,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
       <div style={{ display: 'flex', alignItems: 'center', height: 80 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', height: '100%' }}>
           <img 
-            src={backendUrl + "/uploads/logo.jpg"} 
+            src={BACKEND_URL + "/uploads/logo.jpg"} 
             alt="Big Bike Blitz" 
             style={{ 
               height: 50, 

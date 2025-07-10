@@ -8,6 +8,25 @@ RUN mvn clean package -DskipTests
 # ---- Run Stage ----
 FROM eclipse-temurin:17-jre
 WORKDIR /app
+
+# Install ca-certificates and update-ca-certificates
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Copy the certificate
+COPY tma.crt /usr/local/share/ca-certificates/tma.crt
+
+# Copy verification script
+COPY verify-cert.sh /usr/local/bin/verify-cert.sh
+RUN chmod +x /usr/local/bin/verify-cert.sh
+
+# Update CA certificates to include the custom certificate
+RUN update-ca-certificates
+
+# Verify certificate installation
+RUN /usr/local/bin/verify-cert.sh
+
+# Copy the application jar
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"] 

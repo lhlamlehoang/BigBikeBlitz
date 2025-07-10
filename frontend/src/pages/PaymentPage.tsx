@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Typography, Button, Divider, Row, Col } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { BACKEND_URL } from '../config';
 
 const { Title, Text } = Typography;
 
@@ -30,7 +31,7 @@ const PaymentPage: React.FC = () => {
         <Row gutter={24} align="middle">
           <Col xs={24} md={12} style={{ textAlign: 'center', marginBottom: 24 }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <img src="/assets/momo-qr.png" alt="MoMo QR code for 0938591504" style={{ width: 180, height: 180, borderRadius: 12, background: '#fff', boxShadow: '0 2px 8px #1677ff22' }} />
+              <img src={BACKEND_URL + "/uploads/momo-qr.png"} alt="MoMo QR code for 0938591504" style={{ width: 180, height: 180, borderRadius: 12, background: '#fff', boxShadow: '0 2px 8px #1677ff22' }} />
               <div style={{ marginTop: 16, fontWeight: 600, color: '#1677ff', textAlign: 'center' }}>Scan to pay</div>
             </div>
           </Col>
@@ -44,9 +45,12 @@ const PaymentPage: React.FC = () => {
             <Divider style={{ margin: '12px 0' }} />
             <div style={{ fontWeight: 600, marginBottom: 8 }}>Bikes:</div>
             <ul style={{ paddingLeft: 18 }}>
-              {order.bikes?.map((bike: any) => (
-                <li key={bike.id} style={{ marginBottom: 4 }}>{bike.name} <span style={{ color: '#888' }}>(${bike.price?.toLocaleString()})</span></li>
-              ))}
+              {order.orderItems && order.orderItems.length > 0 ? order.orderItems.map((item: any) => (
+                <li key={item.bike.id} style={{ marginBottom: 4 }}>
+                  {item.bike.name} <span style={{ color: '#888' }}>(${item.bike.price?.toLocaleString()})</span>
+                  <span style={{ color: '#222', marginLeft: 8 }}>Qty: {item.quantity}</span>
+                </li>
+              )) : <li style={{ color: '#888' }}>No bikes</li>}
             </ul>
           </Col>
         </Row>

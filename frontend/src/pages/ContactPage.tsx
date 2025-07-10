@@ -200,12 +200,13 @@ const ContactPage: React.FC = () => {
 
               <Form.Item>
                 <Button
-                  type="primary"
                   htmlType="submit"
                   size="large"
                   loading={loading}
                   icon={<SendOutlined />}
-                  style={{ width: '100%' }}
+                  style={{ borderRadius: 12, background: 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)', color: '#fff', border: 'none', fontWeight: 600 }}
+                  onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #67e8f9 0%, #2196f3 100%)'}
+                  onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)'}
                 >
                   Send Message
                 </Button>
@@ -263,9 +264,17 @@ const ContactPage: React.FC = () => {
             </div>
 
             <Button 
-              type="primary" 
               block 
-              style={{ marginTop: 16 }}
+              style={{ 
+                marginTop: 16,
+                borderRadius: 12,
+                background: 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)',
+                color: '#fff',
+                border: 'none',
+                fontWeight: 600,
+              }}
+              onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #67e8f9 0%, #2196f3 100%)'}
+              onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)'}
               icon={<HomeOutlined />}
               onClick={() => window.open('https://www.google.com/maps/place/Tr%C6%B0%E1%BB%9Dng+%C4%90ua+%C4%90%E1%BA%A1i+Nam/@11.0364693,106.6305911,17z/data=!3m1!4b1!4m6!3m5!1s0x3174d18cceda1d6d:0x337816160523d4a9!8m2!3d11.036464!4d106.633166!16s%2Fg%2F11l5rm18qy?entry=ttu&g_ep=EgoyMDI1MDYzMC4wIKXMDSoASAFQAw%3D%3D', '_blank')}
             >

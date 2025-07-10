@@ -186,16 +186,18 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
     <div style={{
       position: 'fixed',
       bottom: 100,
-      right: 24,
-      width: 400,
-      height: 500,
+      right: 0,
+      width: '40vw',
+      height: '80vh',
       zIndex: 1000,
       backgroundColor: '#fff',
       borderRadius: 12,
       boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
       display: 'flex',
       flexDirection: 'column',
-      border: '1px solid #f0f0f0'
+      border: '1px solid #f0f0f0',
+      minWidth: '400px',
+      maxWidth: '900px'
     }}>
       {/* Header */}
       <div style={{
@@ -269,7 +271,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
             }}
           >
             <div style={{
-              maxWidth: '80%',
+              maxWidth: '85%',
               padding: '12px 16px',
               borderRadius: 18,
               backgroundColor: message.sender === 'user' ? '#667eea' : '#fff',
@@ -386,16 +388,6 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes bounce {
-          0%, 80%, 100% {
-            transform: scale(0);
-          }
-          40% {
-            transform: scale(1);
-          }
-        }
-      `}</style>
     </div>
   );
 };

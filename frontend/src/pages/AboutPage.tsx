@@ -2,9 +2,9 @@ import React from 'react';
 import { Card, Typography, Row, Col, Avatar, Divider, Button } from 'antd';
 import { TeamOutlined, TrophyOutlined, SafetyCertificateOutlined, HeartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from '../config';
 
 const { Title, Paragraph, Text } = Typography;
-const backendUrl = "http://localhost:8080";
 
 const AboutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const AboutPage: React.FC = () => {
     {
       name: 'Lam Le',
       position: 'CEO & Founder',
-      avatar: backendUrl + '/uploads/ceo-biker.png',
+      avatar: BACKEND_URL + '/uploads/ceo-biker.png',
       description: 'Passionate motorcyclist with 10+ years of experience in the industry.'
     }
   ];
@@ -42,7 +42,6 @@ const AboutPage: React.FC = () => {
           Your premier destination for premium motorcycles since 2008
         </Paragraph>
         <Button 
-          type="primary" 
           size="large" 
           ghost
           onClick={() => navigate('/categories')}

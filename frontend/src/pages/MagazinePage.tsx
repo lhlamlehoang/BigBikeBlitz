@@ -165,9 +165,17 @@ const MagazinePage: React.FC = () => {
           </Col>
           <Col xs={24} md={4}>
             <Button 
-              type="primary" 
-              size="large" 
+              size="large"
               block
+              style={{
+                background: 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)',
+                color: '#fff',
+                border: 'none',
+                fontWeight: 600,
+                borderRadius: 12,
+              }}
+              onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #67e8f9 0%, #2196f3 100%)'}
+              onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)'}
               onClick={() => navigate('/categories')}
             >
               Shop Bikes

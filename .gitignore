@@ -50,6 +50,10 @@ ai_agent/dist/
 ai_agent/*.egg-info/
 ai_agent/*.egg
 
+# AI Agent model files
+ai_agent/models/blobs/
+ai_agent/models/manifests/
+
 # AI Agent virtual environments
 ai_agent/venv/
 ai_agent/env/

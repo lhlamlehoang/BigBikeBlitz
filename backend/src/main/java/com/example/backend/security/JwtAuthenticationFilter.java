@@ -25,6 +25,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        
+        // Debug logging for Google OAuth requests
+        if (request.getRequestURI().contains("/api/auth/google")) {
+            System.out.println("JWT Filter: Processing Google OAuth request to " + request.getRequestURI());
+            System.out.println("JWT Filter: Content-Type: " + request.getContentType());
+            System.out.println("JWT Filter: Method: " + request.getMethod());
+        }
+        
         final String authHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
@@ -50,6 +58,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+        
+        // Debug logging for Google OAuth requests
+        if (request.getRequestURI().contains("/api/auth/google")) {
+            System.out.println("JWT Filter: Proceeding to next filter/controller");
+        }
+        
         filterChain.doFilter(request, response);
     }
 } 

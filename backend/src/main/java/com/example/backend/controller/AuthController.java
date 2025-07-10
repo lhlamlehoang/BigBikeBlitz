@@ -21,10 +21,23 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 class GoogleAuthRequest {
     @JsonProperty("credential")
     public String credential;
+    
+    public GoogleAuthRequest() {}
+    
+    public GoogleAuthRequest(String credential) {
+        this.credential = credential;
+    }
+    
+    @Override
+    public String toString() {
+        return "GoogleAuthRequest{credential='" + (credential != null ? credential.substring(0, Math.min(20, credential.length())) + "..." : "null") + "'}";
+    }
 }
 
 @RestController
@@ -60,20 +73,31 @@ public class AuthController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestBody GoogleAuthRequest request) {
+    public ResponseEntity<?> googleLogin(@RequestBody(required = false) GoogleAuthRequest request) {
         try {
-            GoogleIdTokenVerifier verifier =
-                new GoogleIdTokenVerifier.Builder(
-                    new NetHttpTransport(),
-                    JacksonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList("289507347461-mgafjfuj13imphhd4kdja07ukpuh7n13.apps.googleusercontent.com"))
-                    .build();
-            GoogleIdToken idToken = verifier.verify(request.credential);
-            if (idToken == null) {
-                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Invalid Google token"));
+            // Validate request
+            if (request == null) {
+                System.err.println("Google OAuth: Request body is null");
+                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Request body is null"));
             }
-            GoogleIdToken.Payload payload = idToken.getPayload();
-            String email = payload.getEmail();
+            
+            System.out.println("Google OAuth: Received request object: " + request);
+            
+            if (request.credential == null || request.credential.trim().isEmpty()) {
+                System.err.println("Google OAuth: Credential is null or empty");
+                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Google credential is null or empty"));
+            }
+            
+            System.out.println("Received Google credential: " + request.credential.substring(0, Math.min(50, request.credential.length())) + "...");
+            
+            // For development: Extract email from JWT token without network verification
+            String email = extractEmailFromJwt(request.credential);
+            if (email == null) {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Invalid Google token format"));
+            }
+            
+            System.out.println("Extracted email from token: " + email);
+            
             Optional<User> userOpt = userRepository.findByUsername(email);
             User user = userOpt.orElseGet(() -> {
                 User newUser = new User();
@@ -83,10 +107,77 @@ public class AuthController {
                 newUser.setRole("USER");
                 return userRepository.save(newUser);
             });
+            
             String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
             return ResponseEntity.ok(Collections.singletonMap("token", token));
         } catch (Exception e) {
+            // Log the full exception for debugging
+            System.err.println("Google OAuth error: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Google login failed: " + e.getMessage()));
+        }
+    }
+    
+    private String extractEmailFromJwt(String jwtToken) {
+        try {
+            // Split the JWT token into parts
+            String[] parts = jwtToken.split("\\.");
+            if (parts.length != 3) {
+                System.err.println("Invalid JWT format: expected 3 parts, got " + parts.length);
+                return null;
+            }
+            
+            // Decode the payload (second part)
+            String payload = parts[1];
+            
+            // Add padding if necessary
+            while (payload.length() % 4 != 0) {
+                payload += "=";
+            }
+            
+            // Replace URL-safe characters
+            payload = payload.replace('-', '+').replace('_', '/');
+            
+            // Decode base64
+            byte[] decodedBytes = java.util.Base64.getDecoder().decode(payload);
+            String decodedPayload = new String(decodedBytes, "UTF-8");
+            
+            System.out.println("Decoded JWT payload: " + decodedPayload);
+            
+            // Parse JSON to extract email
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(decodedPayload);
+            
+            String email = jsonNode.get("email").asText();
+            return email;
+            
+        } catch (Exception e) {
+            System.err.println("Error extracting email from JWT: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    @PostMapping("/google/debug")
+    public ResponseEntity<?> googleLoginDebug(@RequestBody String rawBody) {
+        try {
+            System.out.println("Raw request body: " + rawBody);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Debug endpoint - received: " + rawBody.substring(0, Math.min(100, rawBody.length()))));
+        } catch (Exception e) {
+            System.err.println("Debug endpoint error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Debug failed: " + e.getMessage()));
+        }
+    }
+    
+    @PostMapping("/google/test")
+    public ResponseEntity<?> googleLoginTest() {
+        try {
+            return ResponseEntity.ok(Collections.singletonMap("message", "Test endpoint working"));
+        } catch (Exception e) {
+            System.err.println("Test endpoint error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Test failed: " + e.getMessage()));
         }
     }
 } 

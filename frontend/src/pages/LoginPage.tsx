@@ -33,13 +33,26 @@ const LoginPage: React.FC = () => {
   const handleGoogleLogin = async (credentialResponse: any) => {
     setLoading(true);
     setError(null);
+    
+    console.log('Google login response:', credentialResponse);
+    
+    if (!credentialResponse || !credentialResponse.credential) {
+      setError('No credential received from Google');
+      setLoading(false);
+      return;
+    }
+    
     try {
-      const res = await api.post('/api/auth/google', { credential: credentialResponse.credential });
+      const requestBody = { credential: credentialResponse.credential };
+      console.log('Sending to backend:', { credential: requestBody.credential.substring(0, 50) + '...' });
+      
+      const res = await api.post('/api/auth/google', requestBody);
       const data = res.data;
       login(data.token);
       const redirectTo = location.state?.from || '/';
       navigate(redirectTo);
     } catch (e: any) {
+      console.error('Google login error:', e);
       setError(e.response?.data?.error || e.message || 'Google login failed');
     } finally {
       setLoading(false);

@@ -4,6 +4,7 @@ import { ShoppingCartOutlined, DeleteOutlined, PlusOutlined, MinusOutlined } fro
 import api from '../auth/authFetch';
 import { useNavigate } from 'react-router-dom';
 import './CartPage.css';
+import { BACKEND_URL } from '../config';
 
 const { Title } = Typography;
 
@@ -25,7 +26,6 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
   const [shippingMethod, setShippingMethod] = useState('Standard');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const navigate = useNavigate();
-  const backendUrl = "http://localhost:8080";
 
   useEffect(() => {
     setLoading(true);
@@ -132,7 +132,7 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
             {
               title: 'Image',
               dataIndex: ['bike', 'image'],
-              render: (image: string) => image ? <img src={image.startsWith('/uploads/') ? backendUrl + image : image} alt="Bike" style={{ width: 80, height: 48, objectFit: 'cover', borderRadius: 8, boxShadow: '0 2px 8px #e0e0e0' }} /> : null,
+              render: (image: string) => image ? <img src={image.startsWith('/uploads/') ? BACKEND_URL + image : image} alt="Bike" style={{ width: 80, height: 48, objectFit: 'cover', borderRadius: 8, boxShadow: '0 2px 8px #e0e0e0' }} /> : null,
             },
             { title: 'Name', dataIndex: ['bike', 'name'], render: (name: string) => <span style={{ fontWeight: 600, fontSize: 18 }}>{name}</span> },
             { title: 'Price', dataIndex: ['bike', 'price'], render: (price: number) => <span style={{ color: '#1677ff', fontWeight: 500 }}>${price.toLocaleString()}</span> },
@@ -197,7 +197,9 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
           <Button
             type="default"
             size="large"
-            style={{ marginLeft: 16, fontWeight: 600, fontSize: 18, borderRadius: 8, background: '#f7f9fb', border: '1px solid #1677ff', color: '#1677ff', transition: 'background 0.3s' }}
+            style={{ marginLeft: 16, fontWeight: 600, fontSize: 18, borderRadius: 8, background: 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)', color: '#fff', border: 'none', transition: 'background 0.3s' }}
+            onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #67e8f9 0%, #2196f3 100%)'}
+            onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2196f3 0%, #67e8f9 100%)'}
             onClick={() => navigate('/orders')}
           >
             View Orders

@@ -14,9 +14,9 @@ services:
   model-downloader:
     image: ubuntu:22.04
     volumes:
-      - .:/workspace
-    working_dir: /workspace
-    entrypoint: ["/bin/bash", "-c", "apt-get update && apt-get install -y curl unzip && bash ai_agent/download_blobs.sh"]
+      - ./ai_agent/models:/models
+    working_dir: /
+    entrypoint: ["/bin/bash", "-c", "apt-get update && apt-get install -y curl unzip && bash /models/download_blobs.sh"]
 
   ollama:
     image: ollama/ollama
@@ -26,6 +26,9 @@ services:
       - "11434:11434"
     volumes:
       - ./ai_agent/models:/root/.ollama/models
+    depends_on:
+      model-downloader:
+        condition: service_completed_successfully
 
   backend:
     build:
@@ -46,6 +49,7 @@ services:
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_REQUIRED: 'true'
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTIONTIMEOUT: 5000
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT: 5000
+      
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT: 5000
     ports:
       - "8080:8080"
@@ -62,7 +66,7 @@ services:
     container_name: frontend
     restart: always
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       - backend
 
@@ -105,9 +109,12 @@ services:
       - ai_agent_data:/app/knowledge_base
       - ai_agent_logs:/app/logs
       - ai_agent_db:/app
+      - ./ai_agent/models:/app/models
     depends_on:
-      - mysql
-      - ollama
+      model-downloader:
+        condition: service_completed_successfully
+      ollama:
+        condition: service_started
 
 volumes:
   mysql_data:

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Typography, Tabs, Table, Button, Modal, Form, Input, Select, Popconfirm, message } from 'antd';
 import { useAuth } from '../auth/AuthContext';
 import api from '../auth/authFetch';
+import { BACKEND_URL } from '../config';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -92,7 +93,7 @@ const AdminPanel: React.FC = () => {
         const formData = new FormData();
         formData.append('file', file);
         const token = localStorage.getItem('token'); // Adjust if you use a different storage or context
-        const res = await fetch('/api/upload', {
+        const res = await fetch(`${BACKEND_URL}/api/upload`, {
           method: 'POST',
           body: formData,
           headers: {

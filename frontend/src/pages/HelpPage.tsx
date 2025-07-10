@@ -11,6 +11,7 @@ import {
   VideoCameraOutlined,
   PhoneOutlined
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Paragraph, Text } = Typography;
 const { Search } = Input;
@@ -18,6 +19,7 @@ const { Panel } = Collapse;
 
 const HelpPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const helpCategories = [
     {
@@ -260,7 +262,7 @@ const HelpPage: React.FC = () => {
               Can't find what you're looking for? Our support team is here to help you with any questions or concerns.
             </Paragraph>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-              <Button type="primary" size="large" icon={<CustomerServiceOutlined />}>
+              <Button size="large" icon={<CustomerServiceOutlined />}>
                 Contact Support
               </Button>
               <Button size="large" icon={<PhoneOutlined />}>
@@ -289,7 +291,15 @@ const HelpPage: React.FC = () => {
         </Title>
         <Row gutter={[24, 24]}>
           <Col xs={24} md={8}>
-            <div style={{ padding: 20, border: '1px solid #f0f0f0', borderRadius: 8 }}>
+            <div
+              style={{ padding: 20, border: '1px solid #f0f0f0', borderRadius: 8, cursor: 'pointer', transition: 'box-shadow 0.2s', boxShadow: '0 0 0 rgba(0,0,0,0)' }}
+              onClick={() => navigate('/magazine')}
+              onMouseOver={e => (e.currentTarget.style.boxShadow = '0 4px 24px rgba(22,119,255,0.10)')}
+              onMouseOut={e => (e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)')}
+              tabIndex={0}
+              role="button"
+              aria-label="Go to Knowledge Base"
+            >
               <BookOutlined style={{ fontSize: 32, color: '#1677ff', marginBottom: 16 }} />
               <Title level={4} style={{ marginBottom: 8 }}>Knowledge Base</Title>
               <Paragraph style={{ color: '#666', marginBottom: 16 }}>
