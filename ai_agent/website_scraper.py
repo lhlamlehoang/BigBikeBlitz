@@ -33,7 +33,7 @@ class WebsiteScraper:
         urls = [self.base_url + route for route in static_routes]
         # Dynamic product routes
         try:
-            backend_api = 'http://localhost:8080/api/bikes/all'
+            backend_api = 'https://bigbikeblitz-backend.up.railway.app/api/bikes/all'
             resp = requests.get(backend_api, timeout=10)
             resp.raise_for_status()
             bikes = resp.json()

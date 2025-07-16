@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     swig \
     curl \
     unzip \
+    rustc \
+    cargo \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only requirements first for better caching
