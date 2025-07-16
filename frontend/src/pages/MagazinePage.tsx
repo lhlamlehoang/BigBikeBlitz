@@ -217,6 +217,7 @@ const MagazinePage: React.FC = () => {
                       </Tag>
                     </div>
                   }
+                  onClick={() => navigate(`/magazine/${article.id}`)}
                 >
                   <div style={{ marginBottom: 12 }}>
                     {article.tags.map(tag => (
@@ -279,6 +280,7 @@ const MagazinePage: React.FC = () => {
                     style={{ height: 180, objectFit: 'cover', borderRadius: '12px 12px 0 0' }}
                   />
                 }
+                onClick={() => navigate(`/magazine/${article.id}`)}
               >
                 <div style={{ marginBottom: 8 }}>
                   {article.tags.slice(0, 2).map(tag => (

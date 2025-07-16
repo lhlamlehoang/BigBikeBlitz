@@ -39,6 +39,7 @@ import LiveChat from './components/LiveChat';
 import SearchSuggestions from './components/SearchSuggestions';
 import analytics from './utils/analytics';
 import { ThemeProvider } from './contexts/ThemeContext';
+import NewsletterContentPage from './pages/NewsletterContentPage';
 
 const { Header: AntHeader, Sider, Content, Footer: LayoutFooter } = Layout;
 const { Title } = Typography;
@@ -439,6 +440,7 @@ const App: React.FC = () => {
               <Route path="/orders" element={<OrdersPage requireLogin={requireLogin} />} />
               <Route path="/payment" element={<PaymentPage />} />
               <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/magazine/:id" element={<NewsletterContentPage />} />
             </Routes>
 
             {/* Newsletter Signup Modal */}
