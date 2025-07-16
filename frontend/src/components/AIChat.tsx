@@ -53,7 +53,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
   const connectWebSocket = (sessionId: string) => {
     try {
       setConnectionStatus('connecting');
-      const ws = new WebSocket(`ws://localhost:8000/ws/chat/${sessionId}`);
+      const ws = new WebSocket(`wss://bigbikeblitz-ai-agent.up.railway.app/ws/chat/${sessionId}`);
       
       ws.onopen = () => {
         setIsConnected(true);
@@ -120,7 +120,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
     } else {
       // Fallback to REST API if WebSocket is not available
       try {
-        const response = await fetch('http://localhost:8000/api/chat', {
+        const response = await fetch('https://bigbikeblitz-ai-agent.up.railway.app/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

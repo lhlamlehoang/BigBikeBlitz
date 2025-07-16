@@ -105,6 +105,7 @@ public class AuthController {
                 newUser.setPassword(passwordEncoder.encode("google-oauth2-user"));
                 newUser.setEmail(email);
                 newUser.setRole("USER");
+                newUser.setAddress("");
                 return userRepository.save(newUser);
             });
             

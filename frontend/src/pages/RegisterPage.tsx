@@ -37,7 +37,7 @@ const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [passwordValue, setPasswordValue] = useState('');
 
-  const onFinish = async (values: { username: string; password: string }) => {
+  const onFinish = async (values: { username: string; password: string; address: string }) => {
     console.log(values);
     setLoading(true);
     setError(null);
@@ -80,6 +80,9 @@ const RegisterPage: React.FC = () => {
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter your username!' }]}> 
             <Input autoComplete="username" />
+          </Form.Item>
+          <Form.Item name="address" label="Address" rules={[{ required: true, message: 'Please enter your address!' }]}> 
+            <Input autoComplete="address" />
           </Form.Item>
           <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please enter your password!' },
             {

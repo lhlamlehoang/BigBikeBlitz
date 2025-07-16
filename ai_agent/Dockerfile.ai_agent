@@ -9,6 +9,7 @@ WORKDIR /app
 # Pre-install build tools only for this stage
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    swig \
     curl \
     unzip \
     && rm -rf /var/lib/apt/lists/*

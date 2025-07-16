@@ -5,6 +5,7 @@ import api from '../auth/authFetch';
 import { useNavigate } from 'react-router-dom';
 import './CartPage.css';
 import { BACKEND_URL } from '../config';
+import { useAuth } from '../auth/AuthContext';
 
 const { Title } = Typography;
 
@@ -18,6 +19,7 @@ const shippingOptions = [
 ];
 
 const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
+  const { user } = useAuth();
   const [cart, setCart] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [removing, setRemoving] = useState<number | null>(null);
@@ -25,6 +27,7 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
   const [paymentMethod, setPaymentMethod] = useState('Bank Transfer');
   const [shippingMethod, setShippingMethod] = useState('Standard');
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [userAddress, setUserAddress] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +38,10 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
       })
       .catch(() => setCart([]))
       .finally(() => setLoading(false));
+    // Fetch user profile for address
+    api.get('/user/profile').then(res => {
+      setUserAddress(res.data?.address || null);
+    });
   }, []);
 
   const setQuantityDirect = async (bikeId: number, newQuantity: number) => {
@@ -105,6 +112,11 @@ const CartPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) => {
   };
 
   const placeOrder = async () => {
+    if (!userAddress || userAddress.trim() === '') {
+      message.error('Please update your address in your profile before placing an order.');
+      navigate('/profile');
+      return;
+    }
     setPlacing(true);
     try {
       await api.post('/api/orders/place', { paymentMethod, shippingMethod });

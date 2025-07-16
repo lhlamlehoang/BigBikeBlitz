@@ -29,6 +29,12 @@ public class OrderController {
     public Order placeOrder(Authentication auth, @RequestBody Map<String, Object> payload) {
         String username = auth.getName();
         User user = userRepository.findByUsername(username).orElseThrow();
+        if (user.getAddress() == null || user.getAddress().trim().isEmpty()) {
+            throw new RuntimeException("Address is required to place an order");
+        }
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+            throw new RuntimeException("Phone is required to place an order");
+        }
         Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow();
         if (cart.getCartItems().isEmpty()) throw new RuntimeException("Cart is empty");
         String paymentMethod = (String) payload.getOrDefault("paymentMethod", "Bank Transfer");
@@ -37,6 +43,8 @@ public class OrderController {
         double total = cart.getCartItems().stream().mapToDouble(item -> (item.getBike().getPrice() != null ? item.getBike().getPrice() : 0) * item.getQuantity()).sum();
         Order order = new Order();
         order.setUserId(user.getId());
+        order.setAddress(user.getAddress());
+        order.setPhone(user.getPhone());
         List<CartItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cart.getCartItems()) {
             CartItem orderItem = new CartItem();

@@ -23,6 +23,8 @@ public class Order {
     private String shippingMethod;
     private Double total;
     private String status = "ordered";
+    private String address;
+    private String phone;
 
     // Getters and setters
     public Long getId() { return id; }
@@ -43,4 +45,8 @@ public class Order {
     public void setTotal(Double total) { this.total = total; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 } 

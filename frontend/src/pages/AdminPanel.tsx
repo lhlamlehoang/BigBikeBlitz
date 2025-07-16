@@ -202,6 +202,7 @@ const AdminPanel: React.FC = () => {
               <Form.Item name="password" label="Password" rules={userModal.user ? [] : [{ required: true }]}><Input.Password autoComplete="new-password" /></Form.Item>
               <Form.Item name="role" label="Role" rules={[{ required: true }]}><Select options={[{ value: 'USER' }, { value: 'ADMIN' }]} /></Form.Item>
               <Form.Item name="enabled" label="Enabled" valuePropName="checked"><Select options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} /></Form.Item>
+              <Form.Item name="address" label="Address" rules={[{ required: true, message: 'Please enter address' }]}><Input /></Form.Item>
               <Button type="primary" htmlType="submit">Save</Button>
             </Form>
           </Modal>

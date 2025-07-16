@@ -23,6 +23,7 @@ const ProfilePage: React.FC = () => {
             phone: data.phone ?? '',
             username: data.username ?? '',
             role: data.role ?? '',
+            address: data.address ?? '',
           });
         }
       } catch {
@@ -40,6 +41,7 @@ const ProfilePage: React.FC = () => {
       await api.put('/user/profile', {
         email: values.email,
         phone: values.phone,
+        address: values.address,
       });
       message.success('Profile updated!');
     } catch {
@@ -67,7 +69,10 @@ const ProfilePage: React.FC = () => {
             <Form.Item label="Email" name="email" rules={[{ type: 'email', message: 'Invalid email' }]}> 
               <Input />
             </Form.Item>
-            <Form.Item label="Phone" name="phone"> 
+            <Form.Item label="Phone" name="phone" rules={[{ required: true, message: 'Please enter your phone' }]}> 
+              <Input />
+            </Form.Item>
+            <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please enter your address' }]}> 
               <Input />
             </Form.Item>
             <Form.Item>

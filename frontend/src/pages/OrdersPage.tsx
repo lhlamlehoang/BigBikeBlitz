@@ -63,6 +63,12 @@ const OrdersPage: React.FC<{ requireLogin: () => void }> = ({ requireLogin }) =>
                 <div style={{ marginBottom: 8 }}>
                   <Text strong>Total:</Text> <span style={{ color: '#1677ff', fontWeight: 600, fontSize: 18 }}>${order.total?.toLocaleString()}</span>
                 </div>
+                <div style={{ marginBottom: 8 }}>
+                  <Text strong>Shipping Address:</Text> {order.address || <span style={{color:'#888'}}>N/A</span>}
+                </div>
+                <div style={{ marginBottom: 8 }}>
+                  <Text strong>Phone:</Text> {order.phone || <span style={{color:'#888'}}>N/A</span>}
+                </div>
                 <Divider style={{ margin: '12px 0' }} />
                 <div style={{ marginBottom: 8 }}>
                   <Text strong>Bikes:</Text>

@@ -35,6 +35,7 @@ public class AdminController {
             throw new IllegalArgumentException("Password is required for new users");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Address is already set if provided in request
         return userRepository.save(user);
     }
 
@@ -48,6 +49,7 @@ public class AdminController {
             String oldPassword = userRepository.findById(id).map(User::getPassword).orElse(null);
             user.setPassword(oldPassword);
         }
+        // Address is already set if provided in request
         return userRepository.save(user);
     }
 

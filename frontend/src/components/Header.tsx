@@ -131,12 +131,6 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
       onClick: () => navigate('/orders')
     },
     {
-      key: 'wishlist',
-      icon: <HeartOutlined />,
-      label: 'Wishlist',
-      onClick: () => navigate('/wishlist')
-    },
-    {
       type: 'divider' as const
     },
     {

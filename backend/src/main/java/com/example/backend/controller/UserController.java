@@ -34,6 +34,7 @@ public class UserController {
         result.put("phone", user.getPhone());  
         result.put("role", user.getRole());     
         result.put("enabled", user.isEnabled()); 
+        result.put("address", user.getAddress());
         return result;
     }
 
@@ -47,6 +48,7 @@ public class UserController {
         System.out.println(user.getRole());
         if (body.containsKey("email")) user.setEmail(body.get("email"));
         if (body.containsKey("phone")) user.setPhone(body.get("phone"));
+        if (body.containsKey("address")) user.setAddress(body.get("address"));
         userRepository.save(user);
     }
 } 
