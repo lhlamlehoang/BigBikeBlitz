@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     port: int = 8000
     
     # Ollama settings
-    ollama_host: str = "https://bb94b93049f0.ngrok-free.app"
+    ollama_host: str = "https://ca6cdb220429.ngrok-free.app"
     ollama_model: str = "mistral:7b"
     ollama_timeout: int = 30
     
@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     
     # AI Model settings
     anthropic_api_key: Optional[str] = None
-    ollama_base_url: str = "https://bb94b93049f0.ngrok-free.app"
+    ollama_base_url: str = "https://ca6cdb220429.ngrok-free.app"
     
     # Demo mode settings
     demo_mode: bool = False
