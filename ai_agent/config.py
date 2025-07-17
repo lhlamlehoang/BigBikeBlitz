@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     port: int = 8000
     
     # Ollama settings
-    ollama_host: str = "https://ca6cdb220429.ngrok-free.app"
+    ollama_host: str = "https://saves-determination-rice-portal.trycloudflare.com"
     ollama_model: str = "mistral:7b"
     ollama_timeout: int = 30
     
