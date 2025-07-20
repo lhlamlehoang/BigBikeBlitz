@@ -916,4 +916,19 @@ body {
     gap: 1.5rem !important;
     margin: 24px 0 !important;
   }
+}
+
+@media (max-width: 900px) {
+  .desktop-search-bar,
+  .desktop-menu {
+    display: none !important;
+  }
+  .mobile-search-bar {
+    display: block !important;
+  }
+}
+@media (min-width: 901px) {
+  .mobile-search-bar {
+    display: none !important;
+  }
 } 

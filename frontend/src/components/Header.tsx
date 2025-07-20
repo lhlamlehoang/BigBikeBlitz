@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
   // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 900);
     };
     
     checkMobile();
@@ -268,7 +268,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
 
         {/* Search Bar - Hidden on mobile */}
         {!isMobile && (
-          <div ref={searchRef} style={{ flex: 1, maxWidth: 500, margin: '0 24px', position: 'relative', display: 'flex', alignItems: 'center', height: '100%' }}>
+          <div ref={searchRef} className="desktop-search-bar" style={{ flex: 1, maxWidth: 500, margin: '0 24px', position: 'relative', display: 'flex', alignItems: 'center', height: '100%' }}>
             <Search
               placeholder="Search motorcycles, brands, or models..."
               value={searchValue}
@@ -328,6 +328,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
           {/* Desktop Menu */}
           {!isMobile && (
             <Menu
+              className="desktop-menu"
               mode="horizontal"
               selectedKeys={[location.pathname]}
               items={menuItems}
@@ -404,7 +405,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
 
       {/* Mobile Search Bar */}
       {isMobile && (
-        <div style={{ 
+        <div className="mobile-search-bar" style={{ 
           padding: '1rem', 
           background: '#fff', 
           borderBottom: '1px solid #f0f0f0',
