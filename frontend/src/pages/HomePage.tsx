@@ -108,6 +108,30 @@ const HomePage: React.FC<HomePageProps> = ({
         </div>
         <Button className="hero-arrow right" icon={<RightOutlined />} onClick={nextHero} style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)', zIndex: 2 }} />
       </div>
+      {/* Hero dots indicator */}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, margin: '12px 0 24px 0' }}>
+        {heroBikes.map((_, idx) => (
+          <div
+            key={idx}
+            style={{
+              width: heroIndex === idx ? 16 : 10,
+              height: heroIndex === idx ? 16 : 10,
+              borderRadius: '50%',
+              background: heroIndex === idx ? '#1677ff' : '#e0e6ed',
+              transition: 'all 0.2s',
+              boxShadow: heroIndex === idx ? '0 2px 8px #1677ff44' : 'none',
+              border: heroIndex === idx ? '2px solid #1677ff' : '1px solid #e0e6ed',
+              cursor: 'pointer',
+              margin: 0,
+              padding: 0
+            }}
+            onClick={() => {
+              if (idx !== heroIndex) navigate && navigate('/');
+              // Optionally, you can expose a setHeroIndex prop to allow direct dot navigation
+            }}
+          />
+        ))}
+      </div>
       <div className="section-title">Featured Bikes</div>
       {loading ? <Spin /> : (
         <div className="vertical-bike-list">
