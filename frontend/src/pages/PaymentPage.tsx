@@ -40,6 +40,8 @@ const PaymentPage: React.FC = () => {
             <div><Text strong>Total:</Text> <span style={{ color: '#1677ff', fontWeight: 600 }}>${order.total?.toLocaleString()}</span></div>
             <div><Text strong>Payment Method:</Text> {order.paymentMethod}</div>
             <div><Text strong>Shipping:</Text> {order.shippingMethod}</div>
+            <div><Text strong>Shipping Address:</Text> {order.address || '-'}</div>
+            <div><Text strong>Phone:</Text> {order.phone || '-'}</div>
             <div><Text strong>Order Date:</Text> {order.orderDate}</div>
             <div><Text strong>Ship Date:</Text> {order.shipDate}</div>
             <Divider style={{ margin: '12px 0' }} />
