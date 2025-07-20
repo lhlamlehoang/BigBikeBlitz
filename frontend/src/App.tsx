@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, ConfigProvider, theme, Button } from 'antd';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { MessageOutlined } from '@ant-design/icons';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider, useAuth } from './auth/AuthContext';
@@ -77,6 +77,7 @@ const AppContent: React.FC = () => {
   const [heroIndex, setHeroIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Check if device is mobile
   useEffect(() => {
@@ -114,6 +115,10 @@ const AppContent: React.FC = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [heroBikes.length]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   const fetchBikes = async () => {
     try {
