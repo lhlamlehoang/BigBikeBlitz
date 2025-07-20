@@ -354,7 +354,6 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
             disabled={!isConnected}
           />
           <Button
-            type="primary"
             icon={<SendOutlined />}
             onClick={handleSend}
             disabled={!inputValue.trim() || isLoading || !isConnected}

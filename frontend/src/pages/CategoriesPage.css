@@ -43,7 +43,7 @@
 }
 .category-drawer .ant-drawer-header {
   border-top-left-radius: 24px;
-  background: #f7f9fb;
+  background: #ffffff;
   font-size: 22px;
   font-weight: 700;
   color: #1677ff;
@@ -67,4 +67,357 @@
 @keyframes fadeInModal {
   from { opacity: 0; transform: scale(0.95) translateY(32px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .categories-section {
+    padding: 16px 0 32px 0;
+    min-height: 50vh;
+  }
+  
+  .categories-tabs {
+    font-size: 0.875rem !important;
+  }
+  
+  .categories-tabs .ant-tabs-nav {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  
+  .categories-tabs .ant-tabs-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  .categories-tabs .ant-tabs-nav-list {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+  }
+  
+  .categories-tabs .ant-tabs-tab {
+    padding: 6px 10px !important;
+    margin: 0 2px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    min-width: auto !important;
+  }
+  
+  .categories-tabs .ant-tabs-tab-btn {
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+  }
+  
+  .categories-filters {
+    margin: 0 auto 16px auto !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  .category-product-card {
+    min-height: 280px !important;
+    border-radius: 12px !important;
+  }
+  
+  .category-product-card .ant-card-body {
+    padding: 12px !important;
+    height: 200px !important;
+  }
+  
+  .category-product-card img {
+    height: 120px !important;
+    border-radius: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .category-product-card .ant-card-meta-title {
+    font-size: 16px !important;
+    text-align: center !important;
+  }
+  
+  .category-product-card .ant-card-meta-description {
+    font-size: 13px !important;
+    text-align: center !important;
+  }
+}
+
+/* iPhone 12 Pro specific fixes */
+@media screen and (max-width: 390px) {
+  .categories-section {
+    padding: 12px 0 24px 0;
+  }
+  
+  .categories-tabs .ant-tabs-tab {
+    padding: 4px 6px !important;
+    margin: 0 1px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .categories-tabs .ant-tabs-tab-btn {
+    font-size: 0.7rem !important;
+    padding: 2px 4px !important;
+  }
+  
+  .categories-filters {
+    padding: 12px !important;
+    margin: 0 auto 12px auto !important;
+  }
+  
+  .category-product-card {
+    min-height: 260px !important;
+  }
+  
+  .category-product-card .ant-card-body {
+    height: 180px !important;
+    padding: 8px !important;
+  }
+  
+  .category-product-card img {
+    height: 100px !important;
+  }
+}
+
+/* Ensure proper touch targets on mobile */
+@media (max-width: 768px) {
+  .category-product-card {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .category-product-card:active {
+    transform: scale(0.98);
+  }
+  
+  .ant-tabs-tab {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Mobile category selector improvements */
+  .categories-section .ant-select {
+    min-width: 140px !important;
+    height: 32px !important;
+  }
+  
+  .categories-section .ant-select-selector {
+    min-height: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .categories-section .ant-select-selection-item {
+    font-size: 0.875rem !important;
+    line-height: 32px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    max-width: calc(100% - 16px) !important;
+  }
+  
+  .categories-section .ant-select-dropdown {
+    font-size: 0.875rem !important;
+    min-width: 140px !important;
+  }
+  
+  .categories-section .ant-select-item {
+    min-height: 32px !important;
+    padding: 6px 12px !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Ensure perfect horizontal alignment */
+  .categories-section .category-selector-container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    flex-direction: row !important;
+  }
+  
+  .categories-section .category-label {
+    display: flex !important;
+    align-items: center !important;
+    height: 32px !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: #666 !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Mobile Select improvements */
+  .ant-select {
+    font-size: 14px !important;
+  }
+  
+  .ant-select-selector {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .ant-select-selection-item {
+    font-size: 14px !important;
+    line-height: 44px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    max-width: calc(100% - 20px) !important;
+  }
+  
+  .ant-select-dropdown {
+    font-size: 14px !important;
+    max-height: 200px !important;
+  }
+  
+  .ant-select-item {
+    min-height: 44px !important;
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .ant-select-item-option-content {
+    font-size: 14px !important;
+  }
+  
+  /* Mobile Input improvements */
+  .ant-input {
+    min-height: 44px !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    padding-right: 16px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+  
+  .ant-input-affix-wrapper {
+    min-height: 44px !important;
+    padding-right: 8px !important;
+  }
+  
+  .ant-input-affix-wrapper .ant-input {
+    padding-right: 8px !important;
+  }
+  
+  /* Mobile Slider improvements */
+  .ant-slider {
+    margin: 16px 0 8px 0 !important;
+  }
+  
+  .ant-slider-handle {
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: -8px !important;
+  }
+  
+  .ant-slider-track {
+    height: 6px !important;
+  }
+  
+  .ant-slider-rail {
+    height: 6px !important;
+  }
+  
+  /* Input alignment fixes */
+  .ant-input {
+    display: flex !important;
+    align-items: center !important;
+    padding: 8px 12px !important;
+    padding-right: 20px !important;
+    line-height: 1.5 !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  
+  .ant-input-affix-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    padding-right: 8px !important;
+  }
+  
+  .ant-input-affix-wrapper .ant-input {
+    height: 100% !important;
+    padding: 8px 12px !important;
+    padding-right: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  
+  .ant-input::placeholder {
+    line-height: 1.5 !important;
+    vertical-align: middle !important;
+  }
+  
+  .ant-select-selector {
+    display: flex !important;
+    align-items: center !important;
+    padding: 8px 12px !important;
+    padding-right: 20px !important;
+  }
+  
+  .ant-select-selection-item {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    line-height: 1.5 !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    max-width: calc(100% - 24px) !important;
+  }
+}
+
+/* Extra small screens for CategoriesPage */
+@media (max-width: 360px) {
+  .categories-filters {
+    padding: 12px 8px !important;
+  }
+  
+  .ant-input {
+    font-size: 13px !important;
+    padding: 6px 8px !important;
+    padding-right: 16px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  
+  .ant-select-selector {
+    padding: 6px 8px !important;
+    padding-right: 16px !important;
+  }
+  
+  .ant-select-selection-item {
+    font-size: 13px !important;
+    max-width: calc(100% - 20px) !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  
+  .categories-section .ant-select-selection-item {
+    font-size: 0.8rem !important;
+    max-width: calc(100% - 16px) !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Force text protection */
+  .ant-input::placeholder {
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
 } 

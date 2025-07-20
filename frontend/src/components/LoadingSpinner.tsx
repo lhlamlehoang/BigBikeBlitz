@@ -19,7 +19,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <div style={{ 
       textAlign: 'center', 
       padding: fullScreen ? '20vh 0' : '40px 0',
-      background: fullScreen ? '#f7f9fb' : 'transparent',
+      background: fullScreen ? '#ffffff' : 'transparent',
       minHeight: fullScreen ? '100vh' : 'auto'
     }}>
       <Spin indicator={antIcon} size={size} />
@@ -50,7 +50,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         width: '100vw',
         height: '100vh',
         zIndex: 9999,
-        background: '#f7f9fb'
+        background: '#ffffff'
       }}>
         {content}
       </div>

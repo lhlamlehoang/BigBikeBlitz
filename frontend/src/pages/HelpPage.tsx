@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Typography, Row, Col, Collapse, Input, Button, Tag, Divider } from 'antd';
+import './HelpPage.css';
 import { 
   QuestionCircleOutlined, 
   SearchOutlined, 
@@ -19,6 +20,7 @@ const { Panel } = Collapse;
 
 const HelpPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
 
   const helpCategories = [
@@ -158,15 +160,42 @@ const HelpPage: React.FC = () => {
         </Paragraph>
         
         {/* Search */}
-        <div style={{ maxWidth: 500, margin: '0 auto' }}>
-          <Search
-            placeholder="Search for help articles..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            size="large"
-            prefix={<SearchOutlined />}
-            style={{ borderRadius: 8 }}
-          />
+        <div className="help-search-container">
+          <div className="help-search-box">
+            <div className="help-search-icon">
+              <SearchOutlined style={{ fontSize: 16 }} />
+            </div>
+            <Input
+              placeholder="Search for help articles..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onPressEnter={() => {
+                // Trigger search on Enter key
+                setIsSearching(true);
+                setTimeout(() => {
+                  setIsSearching(false);
+                  console.log('Searching for:', searchTerm);
+                }, 500);
+              }}
+              size="large"
+              className="help-search-input"
+            />
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="large"
+              className="help-search-button"
+              loading={isSearching}
+              onClick={() => {
+                setIsSearching(true);
+                // Simulate search delay
+                setTimeout(() => {
+                  setIsSearching(false);
+                  console.log('Searching for:', searchTerm);
+                }, 500);
+              }}
+            />
+          </div>
         </div>
       </Card>
 

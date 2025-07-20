@@ -94,20 +94,17 @@ const HomePage: React.FC<HomePageProps> = ({
         justifyContent: 'center',
       }}>
         <div className="hero-bg-overlay" style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
           width: '100%',
           height: '100%',
           background: 'linear-gradient(90deg, rgba(10,20,40,0.72) 60%, rgba(22,119,255,0.12) 100%)',
           zIndex: 1,
         }} />
         <Button className="hero-arrow left" icon={<LeftOutlined />} onClick={prevHero} style={{ position: 'absolute', left: 32, top: '50%', transform: 'translateY(-50%)', zIndex: 2 }} />
-        <div className="hero-content" style={{ position: 'relative', zIndex: 2, color: '#fff', flex: 1, padding: '48px 0 48px 64px', maxWidth: 700 }}>
-          <div className="hero-title" style={{ color: '#fff', textShadow: '0 4px 24px #0008', fontSize: 40, fontWeight: 800, marginBottom: 16 }}>Unleash the Power of BMW Motorcycles</div>
-          <div className="hero-desc" style={{ color: '#e0e6ed', fontSize: 22, marginBottom: 32, textShadow: '0 2px 8px #0006' }}>Experience the thrill of the open road with our premium selection of bikes. Discover, compare, and shop the latest models from BMW and more.</div>
-          <Button className="hero-btn tricolor" size="large" style={{ fontSize: 20, padding: '8px 32px', borderRadius: 8 }} onClick={() => navigate('/categories')}>Race Now</Button>
-          <div className="hero-bike-label" style={{ color: '#fff', fontWeight: 600, fontSize: 24, marginTop: 32, textShadow: '0 2px 8px #0008' }}>{heroBikes[heroIndex].name}</div>
+        <div className="hero-content">
+          <div className="hero-title">Unleash the Power of BMW Motorcycles</div>
+          <div className="hero-desc">Experience the thrill of the open road with our premium selection of bikes. Discover, compare, and shop the latest models from BMW and more.</div>
+          <Button className="hero-btn tricolor" size="large" onClick={() => navigate('/categories')}>Race Now</Button>
+          <div className="hero-bike-label">{heroBikes[heroIndex].name}</div>
         </div>
         <Button className="hero-arrow right" icon={<RightOutlined />} onClick={nextHero} style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)', zIndex: 2 }} />
       </div>

@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { BACKEND_URL } from '../config';
 
-const BASE_URL = 'https://bigbikeblitz-backend.up.railway.app';
+const BASE_URL = BACKEND_URL;
 
 const api = axios.create({
   baseURL: BASE_URL,

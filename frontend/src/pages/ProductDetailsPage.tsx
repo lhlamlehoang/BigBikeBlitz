@@ -23,19 +23,13 @@ interface WishlistItem {
 }
 
 const ProductDetailsPage: React.FC<{ 
+  bikes: Bike[];
   addToCart: (bike: any, quantity?: number) => void, 
-  requireLogin: () => void, 
-  isGuest: boolean,
-  addToWishlist?: (bike: Bike) => void,
-  removeFromWishlist?: (bikeId: number) => void,
-  wishlist?: WishlistItem[]
+  user: any;
 }> = ({ 
+  bikes,
   addToCart, 
-  requireLogin, 
-  isGuest,
-  addToWishlist,
-  removeFromWishlist,
-  wishlist = []
+  user
 }) => {
   const { id } = useParams();
   const [bike, setBike] = useState<any>(null);
@@ -100,7 +94,26 @@ const ProductDetailsPage: React.FC<{
             className="hero-btn tricolor"
             size="large"
             icon={<ShoppingCartOutlined />}
-            onClick={() => isGuest ? requireLogin() : addToCart(bike, 1)}
+            onClick={async () => {
+              if (!user) {
+                message.error('Please login to add items to cart');
+                navigate('/login');
+                return;
+              }
+              try {
+                await addToCart(bike, 1);
+                message.success('Added to cart!');
+              } catch (error) {
+                message.error('Failed to add to cart');
+              }
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 'auto',
+              lineHeight: 'normal'
+            }}
           >
             Add to Cart
           </Button>

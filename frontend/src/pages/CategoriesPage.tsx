@@ -37,29 +37,34 @@ interface WishlistItem {
 }
 
 interface CategoriesPageProps {
-  addToCart: (bike: any, quantity: number) => void;
-  requireLogin: () => void;
-  isGuest: boolean;
-  addToWishlist?: (bike: Bike) => void;
-  removeFromWishlist?: (bikeId: number) => void;
-  wishlist?: WishlistItem[];
+  bikes: Bike[];
+  loading: boolean;
+  addToCart: (bike: any, quantity?: number) => void;
+  user: any;
 }
 
 const CategoriesPage: React.FC<CategoriesPageProps> = ({ 
+  bikes,
+  loading,
   addToCart, 
-  requireLogin, 
-  isGuest,
-  addToWishlist,
-  removeFromWishlist,
-  wishlist = []
+  user
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [price, setPrice] = useState<[number, number]>([1000, 200000]);
   const [brand, setBrand] = useState<string | undefined>(undefined);
   const [type, setType] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState('');
-  const [bikes, setBikes] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
   const [brands, setBrands] = useState<string[]>([]);
   const [types, setTypes] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -78,18 +83,11 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   }, [location.search]);
 
   useEffect(() => {
-    setLoading(true);
-    api.get('/api/bikes/all')
-      .then(res => {
-        // Sort bikes by price descending
-        const sortedBikes = [...res.data].sort((a, b) => b.price - a.price);
-        setBikes(sortedBikes);
-        setBrands([...new Set(sortedBikes.map((b: any) => b.brand))] as string[]);
-        setTypes([...new Set(sortedBikes.map((b: any) => b.type))] as string[]);
-      })
-      .catch(() => message.error('Failed to load bikes'))
-      .finally(() => setLoading(false));
-  }, []);
+    // Extract brands and types from bikes prop
+    const sortedBikes = [...bikes].sort((a, b) => b.price - a.price);
+    setBrands([...new Set(sortedBikes.map((b: any) => b.brand))] as string[]);
+    setTypes([...new Set(sortedBikes.map((b: any) => b.type))] as string[]);
+  }, [bikes]);
 
   const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
@@ -102,19 +100,85 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   );
 
   return (
-    <div className="categories-section">
-      <div className="section-title" style={{ marginBottom: 16 }}>Categories</div>
-      <Tabs
-        defaultActiveKey="all"
-        activeKey={selectedCategory}
-        onChange={setSelectedCategory}
-        centered
-        className="categories-tabs"
-        style={{ marginBottom: 32 }}
-        items={categories}
-      />
-      <div className="categories-filters" style={{ maxWidth: 1100, margin: '0 auto 32px auto', background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(22,119,255,0.06)', padding: 24 }}>
-        <Row gutter={24} align="middle">
+    <div className="categories-section" style={{ padding: isMobile ? '1rem' : '2rem' }}>
+      <div className="section-title" style={{ 
+        marginBottom: isMobile ? 12 : 16,
+        fontSize: isMobile ? '1.5rem' : '2rem',
+        textAlign: 'center'
+      }}>Categories</div>
+      
+      {isMobile ? (
+        <div className="category-selector-container" style={{ 
+          marginBottom: 16,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          justifyContent: 'center'
+        }}>
+          <span className="category-label" style={{
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            color: '#333',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            Category:
+          </span>
+          <Select
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            style={{ 
+              minWidth: 140,
+              fontSize: '0.875rem',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+            size="small"
+            dropdownStyle={{
+              fontSize: '0.875rem',
+              maxHeight: 200
+            }}
+          >
+            {categories.map(cat => (
+              <Select.Option 
+                key={cat.key} 
+                value={cat.key}
+                style={{
+                  fontSize: '0.875rem',
+                  padding: '6px 12px',
+                  minHeight: 36
+                }}
+              >
+                {cat.label}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      ) : (
+        <Tabs
+          defaultActiveKey="all"
+          activeKey={selectedCategory}
+          onChange={setSelectedCategory}
+          centered
+          className="categories-tabs"
+          style={{ 
+            marginBottom: 32,
+            fontSize: '1rem'
+          }}
+          items={categories}
+        />
+      )}
+      
+      <div className="categories-filters" style={{ 
+        maxWidth: 1100, 
+        margin: isMobile ? '0 auto 16px auto' : '0 auto 32px auto', 
+        background: '#fff', 
+        borderRadius: isMobile ? 12 : 16, 
+        boxShadow: '0 2px 12px rgba(22,119,255,0.06)', 
+        padding: isMobile ? 16 : 24 
+      }}>
+        <Row gutter={isMobile ? 12 : 24} align="middle">
           <Col xs={24} sm={12} md={6}>
             <Input
               placeholder="Search by name"
@@ -122,34 +186,90 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               value={search}
               onChange={e => setSearch(e.target.value)}
               allowClear
-              style={{ borderRadius: 8, fontSize: 16, marginBottom: 8 }}
+              style={{ 
+                borderRadius: 8, 
+                fontSize: isMobile ? 14 : 16, 
+                marginBottom: isMobile ? 8 : 8,
+                height: isMobile ? 44 : 40,
+                display: 'flex',
+                alignItems: 'center'
+              }}
             />
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Select
-              style={{ width: '100%', marginBottom: 8 }}
+              style={{ 
+                width: '100%', 
+                marginBottom: isMobile ? 8 : 8,
+                fontSize: isMobile ? 14 : 16,
+                height: isMobile ? 44 : 40
+              }}
               placeholder="Select brand"
               value={brand}
               onChange={setBrand}
               allowClear
+              dropdownStyle={{
+                fontSize: isMobile ? 14 : 16,
+                maxHeight: isMobile ? 200 : 300
+              }}
+              dropdownMatchSelectWidth={isMobile ? false : true}
+              placement="bottomLeft"
             >
-              {brands.map(b => <Select.Option key={b} value={b}>{b}</Select.Option>)}
+              {brands.map(b => (
+                <Select.Option 
+                  key={b} 
+                  value={b}
+                  style={{
+                    fontSize: isMobile ? 14 : 16,
+                    padding: isMobile ? '8px 12px' : '12px 16px',
+                    minHeight: isMobile ? 44 : 48
+                  }}
+                >
+                  {b}
+                </Select.Option>
+              ))}
             </Select>
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Select
-              style={{ width: '100%', marginBottom: 8 }}
+              style={{ 
+                width: '100%', 
+                marginBottom: isMobile ? 8 : 8,
+                fontSize: isMobile ? 14 : 16,
+                height: isMobile ? 44 : 40
+              }}
               placeholder="Select type"
               value={type}
               onChange={setType}
               allowClear
+              dropdownStyle={{
+                fontSize: isMobile ? 14 : 16,
+                maxHeight: isMobile ? 200 : 300
+              }}
+              dropdownMatchSelectWidth={isMobile ? false : true}
+              placement="bottomLeft"
             >
-              {types.map(t => <Select.Option key={t} value={t}>{t}</Select.Option>)}
+              {types.map(t => (
+                <Select.Option 
+                  key={t} 
+                  value={t}
+                  style={{
+                    fontSize: isMobile ? 14 : 16,
+                    padding: isMobile ? '8px 12px' : '12px 16px',
+                    minHeight: isMobile ? 44 : 48
+                  }}
+                >
+                  {t}
+                </Select.Option>
+              ))}
             </Select>
           </Col>
           <Col xs={24} sm={12} md={6}>
-            <div style={{ padding: '0 8px' }}>
-              <span style={{ fontWeight: 500, fontSize: 14 }}>Price Range ($)</span>
+            <div style={{ padding: isMobile ? '0 4px' : '0 8px' }}>
+              <span style={{ 
+                fontWeight: 500, 
+                fontSize: isMobile ? 12 : 14 
+              }}>Price Range ($)</span>
               <Slider
                 range
                 min={1000}
@@ -164,31 +284,89 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
           </Col>
         </Row>
       </div>
-      <Divider />
-      {loading ? <Spin style={{ display: 'block', margin: '64px auto' }} /> : (
-        <Row gutter={[32, 32]} justify="center" style={{ maxWidth: 1200, margin: '0 auto' }}>
+      
+      <Divider style={{ margin: isMobile ? '16px 0' : '24px 0' }} />
+      
+      {loading ? (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: isMobile ? 200 : 300 
+        }}>
+          <Spin size={isMobile ? "large" : "large"} />
+        </div>
+      ) : (
+        <Row gutter={isMobile ? [16, 16] : [32, 32]} justify="center" style={{ 
+          maxWidth: 1200, 
+          margin: '0 auto',
+          padding: isMobile ? '0 0.5rem' : '0'
+        }}>
           {filteredBikes.length === 0 ? (
-            <Col span={24}><Empty description="No bikes found" /></Col>
+            <Col span={24}>
+              <Empty description="No bikes found" />
+            </Col>
           ) : (
             filteredBikes.map(bike => (
               <Col xs={24} sm={12} md={8} lg={6} key={bike.id}>
                 <Card
                   hoverable
                   className="category-product-card fade-in"
-                  style={{ borderRadius: 18, minHeight: 340, boxShadow: '0 4px 24px rgba(22,119,255,0.08)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-                  styles={{ body: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 260, padding: 16 } }}
+                  style={{ 
+                    borderRadius: isMobile ? 12 : 18, 
+                    minHeight: isMobile ? 280 : 340, 
+                    boxShadow: '0 4px 24px rgba(22,119,255,0.08)', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center', 
+                    justifyContent: 'center' 
+                  }}
+                  styles={{ 
+                    body: { 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      height: isMobile ? 200 : 260, 
+                      padding: isMobile ? 12 : 16 
+                    } 
+                  }}
                   cover={
                     <img
                       src={bike.image.startsWith('/uploads/') ? BACKEND_URL + bike.image : bike.image}
                       alt={bike.name}
-                      style={{ display: 'block', margin: '0 auto', height: 140, objectFit: 'contain', borderRadius: 12, marginBottom: 12, boxShadow: '0 2px 8px #1677ff22' }}
+                      style={{ 
+                        display: 'block', 
+                        margin: '0 auto', 
+                        height: isMobile ? 120 : 140, 
+                        objectFit: 'contain', 
+                        borderRadius: isMobile ? 8 : 12, 
+                        marginBottom: isMobile ? 8 : 12, 
+                        boxShadow: '0 2px 8px #1677ff22' 
+                      }}
                     />
                   }
                   onClick={() => navigate(`/product/${bike.id}`)}
                 >
-                  <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 4 }}>{bike.name}</div>
-                  <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}>{bike.brand} &bull; {bike.type}</div>
-                  <div style={{ color: '#1677ff', fontWeight: 600, fontSize: 18, marginBottom: 8 }}>${bike.price.toLocaleString()}</div>
+                  <div style={{ 
+                    fontWeight: 700, 
+                    fontSize: isMobile ? 16 : 20, 
+                    marginBottom: 4,
+                    textAlign: 'center'
+                  }}>{bike.name}</div>
+                  <div style={{ 
+                    color: '#888', 
+                    fontSize: isMobile ? 13 : 15, 
+                    marginBottom: 8,
+                    textAlign: 'center'
+                  }}>{bike.brand} &bull; {bike.type}</div>
+                  <div style={{ 
+                    color: '#1677ff', 
+                    fontWeight: 600, 
+                    fontSize: isMobile ? 16 : 18, 
+                    marginBottom: 8,
+                    textAlign: 'center'
+                  }}>${bike.price.toLocaleString()}</div>
                 </Card>
               </Col>
             ))

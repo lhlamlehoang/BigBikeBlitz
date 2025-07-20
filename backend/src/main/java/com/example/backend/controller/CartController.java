@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -41,7 +42,7 @@ public class CartController {
         boolean found = false;
         for (CartItem item : cart.getCartItems()) {
             if (item.getBike().getId().equals(bikeId)) {
-                item.setQuantity(item.getQuantity() + quantity);
+                item.setQuantity(quantity);
                 found = true;
                 break;
             }
@@ -50,8 +51,10 @@ public class CartController {
             CartItem newItem = new CartItem();
             newItem.setBike(bike);
             newItem.setQuantity(quantity);
+            newItem.setAddedAt(LocalDateTime.now());
             cart.getCartItems().add(newItem);
         }
+        cart.getCartItems().sort((a, b) -> a.getAddedAt().compareTo(b.getAddedAt()));
         return cartRepository.save(cart);
     }
 
@@ -59,12 +62,14 @@ public class CartController {
     public Cart viewCart(Authentication auth) {
         String username = auth.getName();
         User user = userRepository.findByUsername(username).orElseThrow();
-        return cartRepository.findByUserId(user.getId()).orElseGet(() -> {
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseGet(() -> {
             Cart c = new Cart();
             c.setUserId(user.getId());
             c.setCartItems(new ArrayList<>());
             return c;
         });
+        cart.getCartItems().sort((a, b) -> a.getAddedAt().compareTo(b.getAddedAt()));
+        return cart;
     }
 
     @PostMapping("/remove")
@@ -77,11 +82,7 @@ public class CartController {
         while (iterator.hasNext()) {
             CartItem item = iterator.next();
             if (item.getBike().getId().equals(bikeId)) {
-                if (item.getQuantity() > 1) {
-                    item.setQuantity(item.getQuantity() - 1);
-                } else {
-                    iterator.remove();
-                }
+                iterator.remove();
                 break;
             }
         }

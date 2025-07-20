@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Typography, Row, Col, Tag, Button, Input, Select, Avatar, Divider } from 'antd';
-import { SearchOutlined, CalendarOutlined, UserOutlined, EyeOutlined, LikeOutlined, BookOutlined, FireOutlined, StarOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { SearchOutlined, CalendarOutlined, UserOutlined, EyeOutlined, LikeOutlined, BookOutlined, FireOutlined, StarOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const { Title, Paragraph, Text } = Typography;
 const { Search } = Input;
@@ -9,8 +9,21 @@ const { Option } = Select;
 
 const MagazinePage: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const categories = [
     { value: 'all', label: 'All Articles' },
@@ -107,6 +120,105 @@ const MagazinePage: React.FC = () => {
       tags: ['Safety', 'Gear', 'Protection']
     }
   ];
+
+  // If an ID is provided, show individual article view
+  if (id) {
+    const article = articles.find(a => a.id === Number(id));
+    if (!article) {
+      return (
+        <div style={{ padding: '24px', maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
+          <Title level={2}>Article not found</Title>
+          <Button type="primary" onClick={() => navigate('/magazine')}>
+            Back to Magazine
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ padding: isMobile ? '16px' : '24px', maxWidth: 800, margin: '0 auto' }}>
+        <Button 
+          icon={<ArrowLeftOutlined />} 
+          onClick={() => navigate('/magazine')} 
+          style={{ marginBottom: isMobile ? 16 : 24 }}
+          size={isMobile ? "middle" : "large"}
+        >
+          Back to Magazine
+        </Button>
+        
+        <Card style={{ borderRadius: isMobile ? 12 : 16 }}>
+          <img 
+            src={article.image} 
+            alt={article.title} 
+            style={{ 
+              width: '100%', 
+              height: isMobile ? 200 : 300, 
+              objectFit: 'cover', 
+              borderRadius: isMobile ? '12px 12px 0 0' : '16px 16px 0 0',
+              marginBottom: isMobile ? 16 : 24
+            }} 
+          />
+          
+          <div style={{ padding: isMobile ? '0 16px 16px 16px' : '0 24px 24px 24px' }}>
+            <div style={{ marginBottom: 16 }}>
+              {article.tags.map(tag => (
+                <Tag key={tag} color="blue" style={{ marginRight: 8, marginBottom: 8 }}>
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+            
+            <Title level={isMobile ? 2 : 1} style={{ marginBottom: 16, lineHeight: 1.3, fontSize: isMobile ? '1.5rem' : '2rem' }}>
+              {article.title}
+            </Title>
+            
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'flex-start' : 'center', 
+              gap: isMobile ? 8 : 16, 
+              marginBottom: 24, 
+              color: '#666' 
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <UserOutlined />
+                <Text>{article.author}</Text>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <CalendarOutlined />
+                <Text>{article.date}</Text>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <EyeOutlined />
+                <Text>{article.views} views</Text>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <LikeOutlined />
+                <Text>{article.likes} likes</Text>
+              </div>
+            </div>
+            
+            <Paragraph style={{ fontSize: 18, lineHeight: 1.8, color: '#333', marginBottom: 24 }}>
+              {article.excerpt}
+            </Paragraph>
+            
+            <Divider />
+            
+            <div style={{ background: '#f8f9fa', padding: 20, borderRadius: 12 }}>
+              <Title level={4} style={{ marginBottom: 16 }}>Article Content</Title>
+              <Paragraph style={{ fontSize: 16, lineHeight: 1.7, color: '#555' }}>
+                This is where the full article content would be displayed. In a real application, 
+                this would contain the complete article text, images, and any other media content.
+                <br /><br />
+                For now, this is a placeholder that shows the article structure and layout.
+                The actual content would be loaded from a database or CMS system.
+              </Paragraph>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

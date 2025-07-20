@@ -48,17 +48,29 @@ body {
   flex: 1;
   padding: 48px 0 48px 64px;
   max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  height: 100%;
 }
 .hero-title {
-  font-size: 3rem;
-  font-weight: 700;
-  color: #003580;
+  color: #fff;
+  text-shadow: 0 4px 24px #0008;
+  font-size: 40px;
+  font-weight: 800;
   margin-bottom: 16px;
+  text-align: left;
+  width: 100%;
 }
 .hero-desc {
-  font-size: 1.25rem;
-  color: #1a1a1a;
+  color: #e0e6ed;
+  font-size: 22px;
   margin-bottom: 32px;
+  text-shadow: 0 2px 8px #0006;
+  text-align: left;
+  width: 100%;
 }
 .hero-btn {
   background: #1677ff;
@@ -82,6 +94,10 @@ body {
   font-weight: 700;
   box-shadow: 0 2px 12px rgba(22,119,255,0.10);
   transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+  font-size: 20px;
+  padding: 8px 32px;
+  margin-bottom: 0;
+  align-self: flex-start;
 }
 .hero-btn.tricolor:hover {
   background: linear-gradient(135deg, #67e8f9 0%, #1677ff 100%);
@@ -468,14 +484,14 @@ body {
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 .hero-bike-label {
-  margin-top: 18px;
-  font-size: 26px;
-  font-weight: 700;
-  color: #1677ff;
-  text-align: center;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 12px rgba(22,119,255,0.10);
-  animation: fadeIn 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+  color: #fff;
+  font-weight: 600;
+  font-size: 24px;
+  margin-top: 32px;
+  text-shadow: 0 2px 8px #0008;
+  text-align: left;
+  align-self: flex-start;
+  width: 100%;
 }
 
 .custom-avatar-dropdown .ant-dropdown-menu {
@@ -777,4 +793,127 @@ body {
   color: #fff;
   box-shadow: 0 4px 24px rgba(22,119,255,0.18);
   transform: scale(1.07);
+}
+
+/* HomePage vertical bike list responsive styles */
+@media (max-width: 900px) {
+  .vertical-bike-list {
+    gap: 24px !important;
+    margin: 0 0 24px 0 !important;
+  }
+  .vertical-bike-section {
+    flex-direction: column !important;
+    gap: 24px !important;
+    margin: 32px 0 !important;
+    padding: 0 8px !important;
+  }
+  .vertical-bike-image {
+    min-width: 0 !important;
+    flex: none !important;
+    min-height: 220px !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .vertical-bike-image img {
+    width: 100% !important;
+    height: 220px !important;
+    max-width: 98vw !important;
+    border-radius: 12px !important;
+  }
+  .vertical-bike-info {
+    padding: 18px 12px !important;
+    min-width: 0 !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+  }
+}
+@media (max-width: 600px) {
+  .vertical-bike-list {
+    gap: 12px !important;
+    margin: 0 0 12px 0 !important;
+  }
+  .vertical-bike-section {
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin: 16px 0 !important;
+    padding: 0 2px !important;
+  }
+  .vertical-bike-image {
+    min-width: 0 !important;
+    flex: none !important;
+    min-height: 120px !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .vertical-bike-image img {
+    width: 100% !important;
+    height: 120px !important;
+    max-width: 99vw !important;
+    border-radius: 8px !important;
+  }
+  .vertical-bike-info {
+    padding: 10px 4px !important;
+    min-width: 0 !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+  }
+  .vertical-bike-info div {
+    font-size: 13px !important;
+  }
+}
+
+/* Hero Section Responsive Alignment */
+@media (max-width: 768px) {
+  .hero-section-bg {
+    min-height: 220px !important;
+    background-size: contain !important;
+    background-position: center !important;
+  }
+  .hero-content {
+    padding: 8px 6px !important;
+    align-items: center !important;
+    text-align: center !important;
+    max-width: 100% !important;
+  }
+  .hero-title, .hero-desc, .hero-bike-label {
+    text-align: center !important;
+    align-self: center !important;
+  }
+  .hero-btn.tricolor {
+    align-self: center !important;
+  }
+  .hero-arrow.left {
+    left: 12px !important;
+    right: auto !important;
+    top: 62% !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 18px !important;
+  }
+  .hero-arrow.right {
+    right: 12px !important;
+    left: auto !important;
+    top: 62% !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 18px !important;
+  }
+  .vertical-bike-image img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 220px !important;
+    object-fit: contain !important;
+    border-radius: 12px !important;
+    margin: 0 auto !important;
+    display: block !important;
+  }
+  .vertical-bike-section {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    margin: 24px 0 !important;
+  }
 } 
