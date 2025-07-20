@@ -61,6 +61,9 @@ public class AuthController {
             return ResponseEntity.status(401).body(java.util.Collections.singletonMap("error", "Invalid username or password"));
         }
         var user = userOpt.get();
+        if (!user.isEnabled()) {
+            return ResponseEntity.status(401).body(java.util.Collections.singletonMap("error", "Account is disabled. Please contact support."));
+        }
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(401).body(java.util.Collections.singletonMap("error", "Invalid username or password"));
         }
@@ -108,6 +111,10 @@ public class AuthController {
                 newUser.setAddress("");
                 return userRepository.save(newUser);
             });
+            
+            if (!user.isEnabled()) {
+                return ResponseEntity.status(401).body(Collections.singletonMap("error", "Account is disabled. Please contact support."));
+            }
             
             String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
             return ResponseEntity.ok(Collections.singletonMap("token", token));
