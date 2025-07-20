@@ -358,8 +358,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
                 style={{ fontSize: isMobile ? 18 : 22 }}
               />
             </Badge>
-            
-            {/* User Menu */}
+            {/* User Menu or Auth Buttons */}
             {user ? (
               <Dropdown
                 menu={{ items: userMenuItems }}
@@ -380,14 +379,16 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
                 </div>
               </Dropdown>
             ) : (
-              <Space size={isMobile ? "small" : "middle"}>
-                <Button size={isMobile ? "small" : "middle"} onClick={() => navigate('/login')}>
-                  Login
-                </Button>
-                <Button type="primary" size={isMobile ? "small" : "middle"} onClick={() => navigate('/register')}>
-                  Register
-                </Button>
-              </Space>
+              !isMobile && (
+                <Space size={"middle"}>
+                  <Button size="middle" onClick={() => navigate('/login')}>
+                    Login
+                  </Button>
+                  <Button type="primary" size="middle" onClick={() => navigate('/register')}>
+                    Register
+                  </Button>
+                </Space>
+              )
             )}
           </Space>
 
@@ -516,7 +517,7 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
           )}
           
           {/* User Info for Mobile */}
-          {user && (
+          {user ? (
             <div style={{ padding: '1rem', background: '#f8f9fa', margin: '0 1rem', borderRadius: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <Avatar 
@@ -563,6 +564,15 @@ const Header: React.FC<HeaderProps> = ({ collapsed, setCollapsed, cartItemCount 
                   Logout
                 </Button>
               </Space>
+            </div>
+          ) : (
+            <div style={{ padding: '1rem', margin: '0 1rem', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Button block onClick={() => { navigate('/login'); setMobileMenuOpen(false); }}>
+                Login
+              </Button>
+              <Button type="primary" block onClick={() => { navigate('/register'); setMobileMenuOpen(false); }}>
+                Register
+              </Button>
             </div>
           )}
         </div>
