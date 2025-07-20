@@ -29,6 +29,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -180,24 +181,33 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 900);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   if (!isOpen) return null;
 
   return (
     <div style={{
       position: 'fixed',
-      bottom: 100,
-      right: 0,
-      width: '40vw',
-      height: '80vh',
+      top: 0,
+      bottom: 0,
+      right: isMobile ? 0 : 0,
+      left: isMobile ? 0 : 'auto',
+      width: isMobile ? '100vw' : '40vw',
+      minWidth: isMobile ? undefined : '400px',
+      maxWidth: isMobile ? '100vw' : '900px',
+      height: '60vh',
+      margin: 'auto',
       zIndex: 1000,
       backgroundColor: '#fff',
-      borderRadius: 12,
+      borderRadius: isMobile ? '16px 16px 0 0' : 12,
       boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
       display: 'flex',
       flexDirection: 'column',
-      border: '1px solid #f0f0f0',
-      minWidth: '400px',
-      maxWidth: '900px'
+      border: '1px solid #f0f0f0'
     }}>
       {/* Header */}
       <div style={{
