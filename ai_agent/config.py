@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     port: int = 8000
     
     # Ollama settings
-    ollama_host: str = "https://nu-jon-metallica-tsunami.trycloudflare.com"
+    ollama_host: str = "https://rank-gamecube-wiki-possibly.trycloudflare.com"
     ollama_model: str = "mistral:7b"
     ollama_timeout: int = 30
     
