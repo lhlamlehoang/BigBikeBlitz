@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     
     # Website scraping settings
     website_base_url: str = "http://localhost:5173"
-    backend_api_url: str = "https://bigbikeblitz-backend.up.railway.app"
+    backend_api_url: str = "https://bigbikeblitz-server.up.railway.app"
     scraping_timeout: int = 10
     max_concurrent_scrapes: int = 5
     
@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     
     # AI Model settings
     anthropic_api_key: Optional[str] = None
-    ollama_base_url: str = "https://ca6cdb220429.ngrok-free.app"
+    ollama_base_url: str = "https://wrapping-liver-reliable-tex.trycloudflare.com"
     
     # Demo mode settings
     demo_mode: bool = False
