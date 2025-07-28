@@ -22,6 +22,7 @@ const AdminPanel: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [form] = Form.useForm(); // <-- Add form instance for bike modal
 
   const isMobile = useMediaQuery({ maxWidth: 900 });
 
@@ -92,6 +93,11 @@ const AdminPanel: React.FC = () => {
       const fileInput = document.querySelector('input[type="file"][title="Select image file to upload"]') as HTMLInputElement;
       const file = fileInput?.files?.[0];
       let imagePath = values.image;
+      // If adding a new bike and no image is selected, show alert and do not submit
+      if (!bikeModal.bike && !file) {
+        message.error('Please upload an image before saving the bike.');
+        return;
+      }
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
@@ -284,6 +290,7 @@ const AdminPanel: React.FC = () => {
             destroyOnClose
           >
             <Form
+              form={form} // <-- Pass form instance
               layout="vertical"
               initialValues={bikeModal.bike}
               onFinish={handleBikeSave}
@@ -293,7 +300,18 @@ const AdminPanel: React.FC = () => {
               <Form.Item name="brand" label="Brand" rules={[{ required: true }]}><Input /></Form.Item>
               <Form.Item name="type" label="Type" rules={[{ required: true }]}><Input /></Form.Item>
               <Form.Item name="price" label="Price" rules={[{ required: true }]}><Input type="number" /></Form.Item>
-              <Form.Item label="Image File (local upload)">
+              {/* Hidden image field for validation, no longer required */}
+              <Form.Item
+                name="image"
+                style={{ display: 'none' }}
+                // Remove required rule
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item 
+                label={<span>Image File (local upload) <span style={{color: '#ff4d4f'}}>*</span></span>}
+                // No required prop
+              >
                 <input
                   type="file"
                   accept="image/*"
@@ -304,8 +322,11 @@ const AdminPanel: React.FC = () => {
                     if (file) {
                       setSelectedFileName(file.name);
                       setSelectedImage(URL.createObjectURL(file));
-                      // Set the image field in the form
-                      (document.querySelector('input[name="image"]') as HTMLInputElement).value = `/uploads/${file.name}`;
+                      form.setFieldsValue({ image: `/uploads/${file.name}` });
+                    } else {
+                      setSelectedFileName(null);
+                      setSelectedImage(null);
+                      form.setFieldsValue({ image: undefined });
                     }
                   }}
                 />
