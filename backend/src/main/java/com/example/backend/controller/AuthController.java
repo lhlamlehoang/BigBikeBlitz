@@ -104,16 +104,37 @@ public class AuthController {
             
             System.out.println("Extracted email from token: " + email);
             
-            Optional<User> userOpt = userRepository.findByUsername(email);
-            User user = userOpt.orElseGet(() -> {
-                User newUser = new User();
-                newUser.setUsername(email);
-                newUser.setPassword(passwordEncoder.encode("google-oauth2-user"));
-                newUser.setEmail(email);
-                newUser.setRole("USER");
-                newUser.setAddress("");
-                return userRepository.save(newUser);
-            });
+            // First, check if a user with this email already exists
+            Optional<User> existingUserByEmail = userRepository.findAll().stream()
+                .filter(u -> email.equalsIgnoreCase(u.getEmail()))
+                .findFirst();
+            
+            User user;
+            if (existingUserByEmail.isPresent()) {
+                // User exists with this email, use that account
+                user = existingUserByEmail.get();
+                System.out.println("Found existing user with email: " + email);
+            } else {
+                // Check if user exists by username (email)
+                Optional<User> userOpt = userRepository.findByUsername(email);
+                if (userOpt.isPresent()) {
+                    // User exists by username, use that account
+                    user = userOpt.get();
+                    System.out.println("Found existing user by username: " + email);
+                } else {
+                    // Create new user
+                    User newUser = new User();
+                    newUser.setUsername(email);
+                    newUser.setPassword(passwordEncoder.encode("google-oauth2-user"));
+                    newUser.setEmail(email);
+                    newUser.setRole("USER");
+                    newUser.setAddress("");
+                    newUser.setEmailVerified(true); // Google accounts are pre-verified
+                    newUser.setEnabled(true);
+                    user = userRepository.save(newUser);
+                    System.out.println("Created new user with email: " + email);
+                }
+            }
             
             if (!user.isEnabled()) {
                 return ResponseEntity.status(401).body(Collections.singletonMap("error", "Account is disabled. Please contact support."));
