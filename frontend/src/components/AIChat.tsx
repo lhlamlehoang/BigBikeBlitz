@@ -37,7 +37,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isLoading]);
 
   useEffect(() => {
     if (isOpen && !isConnected) {
@@ -52,9 +52,10 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
   };
 
   const connectWebSocket = (sessionId: string) => {
-    try {
-      setConnectionStatus('connecting');
-      const ws = new WebSocket(`wss://bigbikeblitz-agent.up.railway.app/ws/chat/${sessionId}`);
+          try {
+        setConnectionStatus('connecting');
+        const ws = new WebSocket(`wss://bigbikeblitz-agent.up.railway.app/ws/chat/${sessionId}`);
+        // const ws = new WebSocket(`ws://localhost:8000/ws/chat/${sessionId}`);
       
       ws.onopen = () => {
         setIsConnected(true);
@@ -67,8 +68,10 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         console.log('Received AI message:', data);
         
         if (data.type === 'response') {
+          setIsLoading(false);
           addMessage('bot', data.message, data.sources);
         } else if (data.type === 'system') {
+          setIsLoading(false);
           addMessage('bot', data.message);
         }
       };
@@ -76,6 +79,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
       ws.onclose = () => {
         setIsConnected(false);
         setConnectionStatus('error');
+        setIsLoading(false);
         console.log('WebSocket disconnected from AI Agent');
       };
 
@@ -83,6 +87,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         console.error('WebSocket error:', error);
         setIsConnected(false);
         setConnectionStatus('error');
+        setIsLoading(false);
         addMessage('bot', 'Sorry, I\'m having trouble connecting to the AI service. Please try again later.');
       };
 
@@ -90,6 +95,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error('Failed to connect to WebSocket:', error);
       setConnectionStatus('error');
+      setIsLoading(false);
       addMessage('bot', 'Sorry, I\'m having trouble connecting to the AI service. Please try again later.');
     }
   };
@@ -135,17 +141,18 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
 
         if (response.ok) {
           const data = await response.json();
+          setIsLoading(false);
           addMessage('bot', data.response, data.sources);
         } else {
+          setIsLoading(false);
           addMessage('bot', 'Sorry, I\'m having trouble processing your request. Please try again.');
         }
       } catch (error) {
         console.error('Error sending message:', error);
+        setIsLoading(false);
         addMessage('bot', 'Sorry, I\'m having trouble connecting to the AI service. Please try again later.');
       }
     }
-
-    setIsLoading(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -331,14 +338,35 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
               backgroundColor: '#fff',
               color: '#666',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              border: '1px solid #e8e8e8'
+              border: '1px solid #e8e8e8',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ fontSize: 12 }}>AI is thinking</div>
-                <div style={{ display: 'flex', gap: 2 }}>
-                  <div style={{ width: 4, height: 4, backgroundColor: '#666', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out' }}></div>
-                  <div style={{ width: 4, height: 4, backgroundColor: '#666', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out 0.2s' }}></div>
-                  <div style={{ width: 4, height: 4, backgroundColor: '#666', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out 0.4s' }}></div>
+                <RobotOutlined style={{ fontSize: 16, color: '#1890ff' }} />
+                <div style={{ display: 'flex', gap: 3 }}>
+                  <div style={{ 
+                    width: 6, 
+                    height: 6, 
+                    backgroundColor: '#1890ff', 
+                    borderRadius: '50%', 
+                    animation: 'bounce 1.4s infinite ease-in-out' 
+                  }}></div>
+                  <div style={{ 
+                    width: 6, 
+                    height: 6, 
+                    backgroundColor: '#1890ff', 
+                    borderRadius: '50%', 
+                    animation: 'bounce 1.4s infinite ease-in-out 0.2s' 
+                  }}></div>
+                  <div style={{ 
+                    width: 6, 
+                    height: 6, 
+                    backgroundColor: '#1890ff', 
+                    borderRadius: '50%', 
+                    animation: 'bounce 1.4s infinite ease-in-out 0.4s' 
+                  }}></div>
                 </div>
               </div>
             </div>
@@ -361,7 +389,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
             placeholder="Ask about motorcycles, products, or services..."
             autoSize={{ minRows: 1, maxRows: 3 }}
             style={{ borderRadius: 20 }}
-            disabled={!isConnected}
+            disabled={!isConnected || isLoading}
           />
           <Button
             icon={<SendOutlined />}
@@ -397,6 +425,18 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
 
+      <style>{`
+        @keyframes bounce {
+          0%, 80%, 100% {
+            transform: scale(0);
+            opacity: 0.5;
+          }
+          40% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 };

@@ -37,7 +37,7 @@ const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [passwordValue, setPasswordValue] = useState('');
 
-  const onFinish = async (values: { username: string; password: string; address: string }) => {
+  const onFinish = async (values: { username: string; password: string; email: string }) => {
     console.log(values);
     setLoading(true);
     setError(null);
@@ -45,13 +45,19 @@ const RegisterPage: React.FC = () => {
     try {
       const res = await api.post('/register', values);
       if (res.status === 201) {
-        setSuccess('Registration successful! You can now log in.');
-        notification.success({ message: 'Registration successful! You can now log in.' });
-        setTimeout(() => navigate('/login'), 1200);
+        setSuccess('Registration successful! Please check your email to verify your account.');
+        notification.success({ 
+          message: 'Registration successful!', 
+          description: 'Please check your email to verify your account.' 
+        });
+        setTimeout(() => navigate('/login'), 3000);
       } else {
         if (res.data?.error && res.data.error.toLowerCase().includes('username')) {
-          setError('username exist');
+          setError('Username already exists');
           notification.error({ message: 'Username already exists' });
+        } else if (res.data?.error && res.data.error.toLowerCase().includes('email')) {
+          setError('Email already exists');
+          notification.error({ message: 'Email already exists' });
         } else {
           setError(res.data?.error || 'Registration failed');
           notification.error({ message: res.data?.error || 'Registration failed' });
@@ -59,8 +65,11 @@ const RegisterPage: React.FC = () => {
       }
     } catch (e: any) {
       if (e.response?.data?.error && e.response.data.error.toLowerCase().includes('username')) {
-        setError('username exist');
+        setError('Username already exists');
         notification.error({ message: 'Username already exists' });
+      } else if (e.response?.data?.error && e.response.data.error.toLowerCase().includes('email')) {
+        setError('Email already exists');
+        notification.error({ message: 'Email already exists' });
       } else if (e.response?.data?.error) {
         setError(e.response.data.error);
         notification.error({ message: e.response.data.error });
@@ -81,8 +90,15 @@ const RegisterPage: React.FC = () => {
           <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter your username!' }]}> 
             <Input autoComplete="username" />
           </Form.Item>
-          <Form.Item name="address" label="Address" rules={[{ required: true, message: 'Please enter your address!' }]}> 
-            <Input autoComplete="address" />
+          <Form.Item 
+            name="email" 
+            label="Email" 
+            rules={[
+              { required: true, message: 'Please enter your email!' },
+              { type: 'email', message: 'Please enter a valid email address!' }
+            ]}
+          > 
+            <Input autoComplete="email" />
           </Form.Item>
           <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please enter your password!' },
             {

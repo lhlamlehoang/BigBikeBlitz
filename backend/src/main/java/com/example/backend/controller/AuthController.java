@@ -64,6 +64,9 @@ public class AuthController {
         if (!user.isEnabled()) {
             return ResponseEntity.status(401).body(java.util.Collections.singletonMap("error", "Account is disabled. Please contact support."));
         }
+        if (!user.isEmailVerified()) {
+            return ResponseEntity.status(401).body(java.util.Collections.singletonMap("error", "Please verify your email address before logging in."));
+        }
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(401).body(java.util.Collections.singletonMap("error", "Invalid username or password"));
         }

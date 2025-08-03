@@ -29,6 +29,9 @@ public class PasswordResetController {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
+
     @PostMapping("/request")
     public Map<String, Object> requestReset(@RequestBody Map<String, String> body) {
         String email = body.get("email");
@@ -47,7 +50,7 @@ public class PasswordResetController {
             tokenRepository.findByUser(user).ifPresent(tokenRepository::delete); // Remove old tokens
             tokenRepository.save(resetToken);
             // Send email
-            String resetLink = "http://localhost:5173/reset?token=" + token;
+            String resetLink = frontendUrl + "/reset?token=" + token;
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(email);

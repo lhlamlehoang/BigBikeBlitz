@@ -177,12 +177,14 @@ const CartPage: React.FC<{
             <Select value={shippingMethod} onChange={setShippingMethod} options={shippingOptions} style={{ minWidth: 140 }} />
           </Form.Item>
         </Form>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'flex-end', marginTop: 24 }}>
-          <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>
-            Shipping Fee: <span style={{ color: '#1677ff' }}>${shippingFee.toLocaleString()}</span>
+        {cartItems.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'flex-end', marginTop: 24 }}>
+            <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>
+              Shipping Fee: <span style={{ color: '#1677ff' }}>${shippingFee.toLocaleString()}</span>
+            </div>
+            <span style={{ fontSize: 20, fontWeight: 600, marginRight: 0 }}>Total: <span style={{ color: '#1677ff' }}>${total.toLocaleString()}</span></span>
           </div>
-          <span style={{ fontSize: 20, fontWeight: 600, marginRight: 0 }}>Total: <span style={{ color: '#1677ff' }}>${total.toLocaleString()}</span></span>
-        </div>
+        )}
         <div style={{
           display: 'flex',
           flexDirection: isMobile ? 'column' : 'row',

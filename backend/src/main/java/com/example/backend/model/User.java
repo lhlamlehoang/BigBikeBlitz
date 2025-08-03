@@ -25,6 +25,9 @@ public class User {
     private String email;
     private String phone;
     private String address;
+    
+    @Column(nullable = false)
+    private boolean emailVerified = false;
 
     // Getters and setters
     public Long getId() { return id; }
@@ -43,4 +46,6 @@ public class User {
     public void setPhone(String phone) { this.phone = phone; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    public boolean isEmailVerified() { return emailVerified; }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
 } 

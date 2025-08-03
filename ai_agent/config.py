@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     
     # Ollama settings
     ollama_host: str = "https://hand-cad-reef-she.trycloudflare.com"
-    ollama_model: str = "mistral:7b"
+    # ollama_host: str = "http://localhost:11434"
+    ollama_model: str = "llama3.2:1b"
     ollama_timeout: int = 30
     
     # Knowledge base settings
@@ -27,6 +28,7 @@ class Settings(BaseSettings):
     # Website scraping settings
     website_base_url: str = "http://localhost:5173"
     backend_api_url: str = "https://bigbikeblitz-server.up.railway.app"
+    # backend_api_url: str = "http://localhost:8080"
     scraping_timeout: int = 10
     max_concurrent_scrapes: int = 5
     
@@ -38,7 +40,7 @@ class Settings(BaseSettings):
     allowed_origins: list = [
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://bigbikeblitz.com"
+        "https://bigbikeblitz-production.up.railway.app"
     ]
     
     # Logging settings
@@ -50,7 +52,7 @@ class Settings(BaseSettings):
     
     # AI Model settings
     anthropic_api_key: Optional[str] = None
-    ollama_base_url: str = "https://wrapping-liver-reliable-tex.trycloudflare.com"
+    ollama_base_url: str = "https://hand-cad-reef-she.trycloudflare.com"
     
     # Demo mode settings
     demo_mode: bool = False

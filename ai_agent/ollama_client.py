@@ -12,6 +12,7 @@ class OllamaClient:
     def __init__(self, model_name: str = "llama3.2:1b"):
         self.model_name = model_name
         self.base_url = os.getenv("OLLAMA_BASE_URL", "https://hand-cad-reef-she.trycloudflare.com")
+        # self.base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         self.client = ollama.Client(host=self.base_url)
         self._model_loaded = False
         self._response_cache = {}

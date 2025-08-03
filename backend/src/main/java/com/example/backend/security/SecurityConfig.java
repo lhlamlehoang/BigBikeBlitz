@@ -83,6 +83,7 @@ public class SecurityConfig {
                     "/api/bikes/*", 
                     "/uploads/**",
                     "/api/password-reset/request", 
+                    "/verify-email",
                     "/api/password-reset/confirm").permitAll()
                 .anyRequest().authenticated()
             )

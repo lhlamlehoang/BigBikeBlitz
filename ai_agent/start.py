@@ -68,7 +68,7 @@ async def scrape_website_if_needed():
     """Scrape website if knowledge base is empty"""
     try:
         logger.info("🌐 Starting website scraping...")
-        scraper = WebsiteScraper()
+        scraper = WebsiteScraper(base_url="https://bigbikeblitz-production.up.railway.app")
         
         # Scrape main pages
         pages = [
@@ -83,7 +83,8 @@ async def scrape_website_if_needed():
             try:
                 data = await scraper.scrape_page(page)
                 if data:
-                    await kb.add_document(data)
+                    # Note: kb.add_document is not available in this context
+                    # The scraping is handled by the main.py startup event
                     logger.info(f"✅ Scraped: {page}")
             except Exception as e:
                 logger.warning(f"⚠️  Failed to scrape {page}: {e}")
