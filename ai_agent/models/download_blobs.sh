@@ -3,7 +3,7 @@ set -e
 
 MODEL_DIR="/models/blobs"
 MODEL_FILE="$MODEL_DIR/sha256-4f659a1e86d7f5a33c389f7991e7224b7ee6ad0358b53437d54c02d2e1b1118d" # Example file
-MODEL_URL="https://box.tma.com.vn/index.php/s/pT99l3dkR6rPyNB/download"
+MODEL_URL="link to download models.zip"
 MODEL_ZIP="/models/models.zip"
 MIN_SIZE=1200000000
 

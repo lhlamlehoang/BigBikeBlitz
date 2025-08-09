@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-MODEL_URL="https://box.tma.com.vn/index.php/s/pT99l3dkR6rPyNB/download"
+MODEL_URL="link to download models.zip"
 MODEL_ZIP="./models/models.zip"
 MIN_SIZE=1200000000
 
