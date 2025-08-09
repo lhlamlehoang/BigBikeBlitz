@@ -12,9 +12,6 @@ WORKDIR /app
 # Install ca-certificates and update-ca-certificates
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
-# Copy the certificate
-COPY tma.crt /usr/local/share/ca-certificates/tma.crt
-
 # Copy verification script
 COPY verify-cert.sh /usr/local/bin/verify-cert.sh
 RUN chmod +x /usr/local/bin/verify-cert.sh

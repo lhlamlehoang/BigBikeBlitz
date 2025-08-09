@@ -39,3 +39,4 @@ langchain-community==0.0.10
 selenium 
 webdriver_manager
 aiosqlite
+gdown

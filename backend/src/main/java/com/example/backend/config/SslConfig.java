@@ -27,7 +27,7 @@ public class SslConfig {
             // Set the default SSL context
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
             
-            System.out.println("SSL Context configured with system trust store (includes tma.crt)");
+            System.out.println("SSL Context configured with system trust store");
             
         } catch (Exception e) {
             System.err.println("Warning: Could not configure SSL context with system trust store: " + e.getMessage());

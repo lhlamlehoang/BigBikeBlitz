@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     port: int = 8000
     
     # Ollama settings
-    ollama_host: str = "https://summit-projection-accessories-fwd.trycloudflare.com"
-    # ollama_host: str = "http://localhost:11434"
+    # ollama_host: str = "https://summit-projection-accessories-fwd.trycloudflare.com"
+    ollama_host: str = "http://localhost:11434"
     ollama_model: str = "llama3.2:1b"
     ollama_timeout: int = 30
     
