@@ -57,7 +57,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://127.0.0.1:5173");
         configuration.addAllowedOrigin("http://172.28.192.1:5173");
         configuration.addAllowedOrigin("http://0.0.0.0:8000");
-        configuration.addAllowedOrigin("https://bigbikeblitz-production.up.railway.app");
+        // configuration.addAllowedOrigin("https://bigbikeblitz-production.up.railway.app");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     
     # Website scraping settings
     website_base_url: str = "http://localhost:5173"
-    backend_api_url: str = "https://bigbikeblitz-server.up.railway.app"
-    # backend_api_url: str = "http://localhost:8080"
+    # backend_api_url: str = "https://bigbikeblitz-server.up.railway.app"
+    backend_api_url: str = "http://localhost:8080"
     scraping_timeout: int = 10
     max_concurrent_scrapes: int = 5
     
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     allowed_origins: list = [
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://bigbikeblitz-production.up.railway.app"
+        # "https://bigbikeblitz-production.up.railway.app"
     ]
     
     # Logging settings

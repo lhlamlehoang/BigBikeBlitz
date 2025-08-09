@@ -60,8 +60,8 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         setSessionId(newSessionId);
         
-        const ws = new WebSocket(`wss://bigbikeblitz-agent.up.railway.app/ws/chat/${newSessionId}`);
-        // const ws = new WebSocket(`ws://localhost:8000/ws/chat/${newSessionId}`);
+        // const ws = new WebSocket(`wss://bigbikeblitz-agent.up.railway.app/ws/chat/${newSessionId}`);
+        const ws = new WebSocket(`ws://localhost:8000/ws/chat/${newSessionId}`);
         
         ws.onopen = () => {
           console.log('Connected to AI agent');

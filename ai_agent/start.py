@@ -68,7 +68,8 @@ async def scrape_website_if_needed():
     """Scrape website if knowledge base is empty"""
     try:
         logger.info("🌐 Starting website scraping...")
-        scraper = WebsiteScraper(base_url="https://bigbikeblitz-production.up.railway.app")
+        # scraper = WebsiteScraper(base_url="https://bigbikeblitz-production.up.railway.app")
+        scraper = WebsiteScraper(base_url="http://localhost:5173")
         
         # Scrape main pages
         pages = [
